@@ -1,0 +1,73 @@
+import { AlertCircle, Package, MessageSquare, Archive } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/core/components/ui/card'
+import { Skeleton } from '@/core/components/ui/skeleton'
+import { useAdminProducts } from '@/core/hooks/queries/useProductsQueries'
+import { useAdminRequests } from '@/core/hooks/queries/useContactRequestsQueries'
+
+function StatCard({ title, value, icon: Icon, description, loading }) {
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <CardTitle className="text-sm font-medium">{title}</CardTitle>
+        <Icon className="h-4 w-4 text-muted-foreground" />
+      </CardHeader>
+      <CardContent>
+        {loading ? <Skeleton className="h-8 w-12" /> : (
+          <>
+            <p className="text-2xl font-bold">{value}</p>
+            {description && <p className="text-xs text-muted-foreground mt-1">{description}</p>}
+          </>
+        )}
+      </CardContent>
+    </Card>
+  )
+}
+
+export default function AdminDashboard() {
+  const { data: products, isLoading: productsLoading } = useAdminProducts()
+  const { data: requests, isLoading: requestsLoading } = useAdminRequests()
+
+  const pendingRequests = requests?.filter((r) => r.status === 'pending').length ?? 0
+  const lowStock = products?.filter((p) => p.is_active && p.stock === 0).length ?? 0
+  const inactiveProducts = products?.filter((p) => !p.is_active).length ?? 0
+  const totalProducts = products?.filter((p) => p.is_active).length ?? 0
+
+  return (
+    <div className="flex flex-col gap-6">
+      <div>
+        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <p className="text-muted-foreground text-sm">Resumen general del negocio</p>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <StatCard
+          title="Consultas pendientes"
+          value={pendingRequests}
+          icon={MessageSquare}
+          description="Sin responder"
+          loading={requestsLoading}
+        />
+        <StatCard
+          title="Productos activos"
+          value={totalProducts}
+          icon={Package}
+          loading={productsLoading}
+        />
+        <StatCard
+          title="Sin stock"
+          value={lowStock}
+          icon={AlertCircle}
+          description="Activos en 0"
+          loading={productsLoading}
+        />
+        <StatCard
+          title="Inactivos"
+          value={inactiveProducts}
+          icon={Archive}
+          description="Ocultos del catálogo"
+          loading={productsLoading}
+        />
+      </div>
+    </div>
+  )
+}
