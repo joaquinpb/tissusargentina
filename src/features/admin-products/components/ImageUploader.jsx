@@ -18,23 +18,49 @@ import { Button } from '@/core/components/ui/button'
 import { uploadProductImage } from '@/core/services/api'
 import { cn } from '@/core/lib/utils'
 
-function SortableImage({ url, onRemove }) {
+function SortableImage({ url, onRemove, isFirst }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: url })
-  const style = { transform: CSS.Transform.toString(transform), transition }
+  const style = { 
+    transform: CSS.Transform.toString(transform), 
+    transition,
+    touchAction: 'none'
+  }
 
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className={cn('relative group rounded-md overflow-hidden border aspect-square bg-muted', isDragging && 'opacity-50 z-50')}
+      className={cn(
+        'relative group rounded-xl overflow-hidden border border-border aspect-square bg-muted shadow-xs transition-all duration-200 hover:shadow-md hover:border-muted-foreground/30', 
+        isDragging && 'opacity-50 z-50 ring-2 ring-primary scale-105'
+      )}
     >
-      <img src={url} alt="" className="h-full w-full object-cover" />
-      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
-        <button {...attributes} {...listeners} className="p-1 rounded bg-white/20 cursor-grab active:cursor-grabbing">
-          <GripVertical className="h-4 w-4 text-white" />
+      <img src={url} alt="" className="h-full w-full object-cover select-none pointer-events-none" />
+      
+      {isFirst && (
+        <span className="absolute top-2 left-2 bg-primary text-primary-foreground text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md select-none">
+          Principal
+        </span>
+      )}
+
+      {/* Hover action overlay */}
+      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2">
+        <button 
+          type="button"
+          {...attributes} 
+          {...listeners} 
+          className="p-1.5 rounded-lg bg-white/15 hover:bg-white/25 transition-colors cursor-grab active:cursor-grabbing text-white"
+          title="Arrastrar para ordenar"
+        >
+          <GripVertical className="h-4 w-4" />
         </button>
-        <button onClick={() => onRemove(url)} className="p-1 rounded bg-white/20">
-          <X className="h-4 w-4 text-white" />
+        <button 
+          type="button"
+          onClick={() => onRemove(url)} 
+          className="p-1.5 rounded-lg bg-destructive hover:bg-destructive/90 transition-colors text-white"
+          title="Eliminar imagen"
+        >
+          <X className="h-4 w-4" />
         </button>
       </div>
     </div>
@@ -43,9 +69,14 @@ function SortableImage({ url, onRemove }) {
 
 export function ImageUploader({ productId, images = [], onChange }) {
   const [uploading, setUploading] = useState(false)
-  const sensors = useSensors(useSensor(PointerSensor))
+  const sensors = useSensors(useSensor(PointerSensor, {
+    activationConstraint: {
+      distance: 8, // Avoid accidental drag while clicking buttons
+    }
+  }))
 
   const handleFiles = useCallback(async (files) => {
+    if (!files || files.length === 0) return
     setUploading(true)
     try {
       const urls = await Promise.all(
@@ -74,35 +105,43 @@ export function ImageUploader({ productId, images = [], onChange }) {
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Drop zone */}
-      <div
+      {/* Drop zone (Label matches input to make whole area clickable) */}
+      <label
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
-        className="border-2 border-dashed rounded-lg p-6 text-center text-sm text-muted-foreground hover:border-primary transition-colors"
+        className="border-2 border-dashed border-muted-foreground/25 rounded-xl p-8 text-center text-sm text-muted-foreground hover:border-primary hover:bg-primary/5 hover:text-primary transition-all duration-200 cursor-pointer flex flex-col items-center justify-center gap-2 group"
       >
-        <Upload className="mx-auto h-6 w-6 mb-2" />
-        <p>Arrastrá imágenes acá o</p>
-        <label className="mt-1 inline-block cursor-pointer text-primary underline underline-offset-2">
-          seleccioná archivos
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            className="hidden"
-            onChange={(e) => handleFiles(e.target.files)}
-            disabled={uploading}
-          />
-        </label>
-        {uploading && <p className="mt-1">Subiendo...</p>}
-      </div>
+        <Upload className="h-7 w-7 text-muted-foreground/70 group-hover:text-primary transition-colors duration-200" />
+        <div className="flex flex-col gap-1">
+          <p className="font-medium">
+            Arrastrá imágenes acá o <span className="text-primary group-hover:underline underline-offset-2">seleccioná archivos</span>
+          </p>
+          <p className="text-xs text-muted-foreground/80">
+            Formatos soportados: PNG, JPG, JPEG. La primera será la principal.
+          </p>
+        </div>
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => handleFiles(e.target.files)}
+          disabled={uploading}
+        />
+        {uploading && (
+          <p className="mt-1 text-xs text-primary animate-pulse font-semibold">
+            Subiendo imágenes...
+          </p>
+        )}
+      </label>
 
       {/* Grid de imágenes */}
       {images.length > 0 && (
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={images} strategy={rectSortingStrategy}>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-4 gap-3">
               {images.map((url) => (
-                <SortableImage key={url} url={url} onRemove={handleRemove} />
+                <SortableImage key={url} url={url} onRemove={handleRemove} isFirst={url === images[0]} />
               ))}
             </div>
           </SortableContext>
@@ -111,3 +150,4 @@ export function ImageUploader({ productId, images = [], onChange }) {
     </div>
   )
 }
+

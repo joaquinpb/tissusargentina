@@ -16,7 +16,19 @@ import {
 import { useProductMutations } from '@/core/hooks/queries/useProductsQueries'
 import { useAdminCategories } from '@/core/hooks/queries/useCategoriesQueries'
 import { ImageUploader } from './ImageUploader'
-import { slugify } from '@/core/lib/utils'
+import { slugify, cn } from '@/core/lib/utils'
+import { 
+  Sparkles, 
+  Package, 
+  Tag, 
+  DollarSign, 
+  Barcode, 
+  Eye, 
+  FileText, 
+  Image as ImageIcon,
+  AlertCircle,
+  Hash
+} from 'lucide-react'
 
 const schema = z.object({
   name: z.string().min(1, 'El nombre es requerido'),
@@ -49,6 +61,11 @@ export function ProductFormSheet({ product, open, onClose }) {
     },
   })
 
+  // Explicitly register custom fields (category_id)
+  useEffect(() => {
+    register('category_id')
+  }, [register])
+
   useEffect(() => {
     if (open) {
       reset({
@@ -63,7 +80,7 @@ export function ProductFormSheet({ product, open, onClose }) {
       })
       setImages(product?.images || [])
     }
-  }, [open, product])
+  }, [open, product, reset])
 
   const onSubmit = async (values) => {
     const payload = {
@@ -75,10 +92,10 @@ export function ProductFormSheet({ product, open, onClose }) {
     try {
       if (isEditing) {
         await update.mutateAsync({ id: product.id, ...payload })
-        toast.success('Producto actualizado')
+        toast.success('Producto actualizado con éxito')
       } else {
         await create.mutateAsync(payload)
-        toast.success('Producto creado')
+        toast.success('Producto creado con éxito')
       }
       onClose()
     } catch (e) {
@@ -88,81 +105,216 @@ export function ProductFormSheet({ product, open, onClose }) {
 
   return (
     <Sheet open={open} onOpenChange={(o) => !o && onClose()}>
-      <SheetContent className="w-full sm:max-w-xl overflow-y-auto">
-        <SheetHeader>
-          <SheetTitle>{isEditing ? 'Editar producto' : 'Nuevo producto'}</SheetTitle>
+      <SheetContent className="w-full sm:max-w-2xl h-full flex flex-col p-0 gap-0 overflow-hidden">
+        <SheetHeader className="px-6 py-5 border-b border-border flex-shrink-0">
+          <SheetTitle className="text-lg font-bold flex items-center gap-2">
+            {isEditing ? (
+              <>
+                <Sparkles className="h-5 w-5 text-primary" />
+                Editar Producto
+              </>
+            ) : (
+              <>
+                <Package className="h-5 w-5 text-primary" />
+                Nuevo Producto
+              </>
+            )}
+          </SheetTitle>
+          <p className="text-xs text-muted-foreground mt-1">
+            {isEditing 
+              ? 'Modifica los detalles del producto y guarda los cambios.' 
+              : 'Completa la información básica y añade imágenes del nuevo producto.'}
+          </p>
         </SheetHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 py-4">
-          <div className="flex flex-col gap-1.5">
-            <Label>Nombre *</Label>
-            <Input {...register('name')} placeholder="Mesa de pool 8 pies" />
-            {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
-          </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1.5">
-              <Label>Precio (ARS)</Label>
-              <Input type="number" step="0.01" {...register('price')} placeholder="Dejar vacío = consultar" />
-              {errors.price && <p className="text-xs text-destructive">{errors.price.message}</p>}
+        <form onSubmit={handleSubmit(onSubmit)} className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+          {/* SECCIÓN 1: INFORMACIÓN BÁSICA */}
+          <div className="space-y-4 p-5 rounded-xl border border-border bg-card shadow-xs">
+            <div className="flex items-center gap-2 pb-2 border-b border-border">
+              <Tag className="h-4 w-4 text-muted-foreground/75" />
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Información Básica</h3>
             </div>
+
             <div className="flex flex-col gap-1.5">
-              <Label>Stock *</Label>
-              <Input type="number" min="0" {...register('stock')} />
-              {errors.stock && <p className="text-xs text-destructive">{errors.stock.message}</p>}
+              <Label className="font-medium text-sm">Nombre del Producto *</Label>
+              <Input {...register('name')} placeholder="Ej. Mesa de pool 8 pies" className="focus-visible:ring-primary" />
+              {errors.name && (
+                <p className="text-xs text-destructive flex items-center gap-1 mt-0.5">
+                  <AlertCircle className="h-3.5 w-3.5" />
+                  {errors.name.message}
+                </p>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1.5">
+                <Label className="font-medium text-sm">Categoría</Label>
+                <Select
+                  value={watch('category_id') || 'none'}
+                  onValueChange={(v) => setValue('category_id', v === 'none' ? null : v)}
+                >
+                  <SelectTrigger className="w-full focus:ring-primary">
+                    <SelectValue placeholder="Sin categoría" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Sin categoría</SelectItem>
+                    {categories.map((c) => (
+                      <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <Label className="font-medium text-sm">SKU / Código Único</Label>
+                <div className="relative">
+                  <Barcode className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/70" />
+                  <Input {...register('sku')} placeholder="Ej. SKU-POOL-001" className="pl-9 focus-visible:ring-primary" />
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1.5">
-              <Label>Categoría</Label>
-              <Select
-                value={watch('category_id') || ''}
-                onValueChange={(v) => setValue('category_id', v || null)}
-              >
-                <SelectTrigger><SelectValue placeholder="Sin categoría" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">Sin categoría</SelectItem>
-                  {categories.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+          {/* SECCIÓN 2: PRECIOS E INVENTARIO */}
+          <div className="space-y-4 p-5 rounded-xl border border-border bg-card shadow-xs">
+            <div className="flex items-center gap-2 pb-2 border-b border-border">
+              <DollarSign className="h-4 w-4 text-muted-foreground/75" />
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Precio e Inventario</h3>
             </div>
-            <div className="flex flex-col gap-1.5">
-              <Label>SKU</Label>
-              <Input {...register('sku')} placeholder="Código interno" />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1.5">
+                <Label className="font-medium text-sm flex items-center gap-1">
+                  Precio
+                  <span className="text-xs text-muted-foreground font-normal">(ARS)</span>
+                </Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground/70 font-semibold">$</span>
+                  <Input 
+                    type="number" 
+                    step="0.01" 
+                    {...register('price')} 
+                    placeholder="Consultar precio" 
+                    className="pl-7 focus-visible:ring-primary" 
+                  />
+                </div>
+                <p className="text-[11px] text-muted-foreground leading-normal">
+                  Dejar vacío para mostrar como "Consultar precio" (ideal para cotizaciones).
+                </p>
+                {errors.price && (
+                  <p className="text-xs text-destructive flex items-center gap-1 mt-0.5">
+                    <AlertCircle className="h-3.5 w-3.5" />
+                    {errors.price.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <Label className="font-medium text-sm">Stock Disponible *</Label>
+                <div className="relative">
+                  <Hash className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/70" />
+                  <Input 
+                    type="number" 
+                    min="0" 
+                    {...register('stock')} 
+                    className="pl-9 focus-visible:ring-primary" 
+                  />
+                </div>
+                {errors.stock && (
+                  <p className="text-xs text-destructive flex items-center gap-1 mt-0.5">
+                    <AlertCircle className="h-3.5 w-3.5" />
+                    {errors.stock.message}
+                  </p>
+                )}
+              </div>
             </div>
           </div>
 
-          <div className="flex gap-4">
-            <label className="flex items-center gap-2 text-sm cursor-pointer">
-              <input type="checkbox" {...register('is_active')} className="accent-primary" />
-              Activo
-            </label>
-            <label className="flex items-center gap-2 text-sm cursor-pointer">
-              <input type="checkbox" {...register('is_featured')} className="accent-primary" />
-              Destacado
-            </label>
+          {/* SECCIÓN 3: ESTADO Y VISIBILIDAD */}
+          <div className="space-y-4 p-5 rounded-xl border border-border bg-card shadow-xs">
+            <div className="flex items-center gap-2 pb-2 border-b border-border">
+              <Eye className="h-4 w-4 text-muted-foreground/75" />
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Estado y Visibilidad</h3>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <label className={cn(
+                "flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 select-none",
+                watch('is_active') 
+                  ? "border-primary bg-primary/[0.03] dark:bg-primary/[0.08]" 
+                  : "border-border hover:border-muted-foreground/25 hover:bg-muted/10"
+              )}>
+                <input 
+                  type="checkbox" 
+                  {...register('is_active')} 
+                  className="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-primary accent-primary cursor-pointer" 
+                />
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-sm font-semibold">Activo</span>
+                  <span className="text-xs text-muted-foreground leading-relaxed">Visible en la tienda para los clientes.</span>
+                </div>
+              </label>
+
+              <label className={cn(
+                "flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 select-none",
+                watch('is_featured') 
+                  ? "border-primary bg-primary/[0.03] dark:bg-primary/[0.08]" 
+                  : "border-border hover:border-muted-foreground/25 hover:bg-muted/10"
+              )}>
+                <input 
+                  type="checkbox" 
+                  {...register('is_featured')} 
+                  className="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-primary accent-primary cursor-pointer" 
+                />
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-sm font-semibold">Destacado</span>
+                  <span className="text-xs text-muted-foreground leading-relaxed">Aparecerá en la sección del inicio de la web.</span>
+                </div>
+              </label>
+            </div>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <Label>Descripción</Label>
-            <Textarea {...register('description')} rows={4} placeholder="Descripción del producto..." />
+          {/* SECCIÓN 4: DESCRIPCIÓN */}
+          <div className="space-y-4 p-5 rounded-xl border border-border bg-card shadow-xs">
+            <div className="flex items-center gap-2 pb-2 border-b border-border">
+              <FileText className="h-4 w-4 text-muted-foreground/75" />
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Detalles y Descripción</h3>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <Label className="font-medium text-sm">Descripción del Producto</Label>
+              <Textarea 
+                {...register('description')} 
+                rows={4} 
+                placeholder="Detalla las características físicas, medidas, materiales, etc." 
+                className="focus-visible:ring-primary resize-y min-h-[100px]"
+              />
+            </div>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <Label>Imágenes</Label>
-            <ImageUploader productId={product?.id} images={images} onChange={setImages} />
-          </div>
+          {/* SECCIÓN 5: IMÁGENES */}
+          <div className="space-y-4 p-5 rounded-xl border border-border bg-card shadow-xs">
+            <div className="flex items-center gap-2 pb-2 border-b border-border">
+              <ImageIcon className="h-4 w-4 text-muted-foreground/75" />
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Imágenes del Producto</h3>
+            </div>
 
-          <SheetFooter className="mt-4">
-            <Button variant="outline" type="button" onClick={onClose}>Cancelar</Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Guardando...' : isEditing ? 'Actualizar' : 'Crear'}
-            </Button>
-          </SheetFooter>
+            <div className="flex flex-col gap-1.5">
+              <ImageUploader productId={product?.id} images={images} onChange={setImages} />
+            </div>
+          </div>
         </form>
+
+        <SheetFooter className="px-6 py-4 border-t border-border bg-muted/20 dark:bg-muted/10 flex-shrink-0 flex-row justify-end gap-3 mt-0">
+          <Button variant="outline" type="button" onClick={onClose} disabled={isSubmitting}>
+            Cancelar
+          </Button>
+          <Button type="submit" disabled={isSubmitting} onClick={handleSubmit(onSubmit)} className="min-w-[120px]">
+            {isSubmitting ? 'Guardando...' : isEditing ? 'Guardar Cambios' : 'Crear Producto'}
+          </Button>
+        </SheetFooter>
       </SheetContent>
     </Sheet>
   )
 }
+
