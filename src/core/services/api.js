@@ -108,7 +108,7 @@ export async function deleteProduct(id) {
 export async function upsertProducts(rows) {
   const { data, error } = await supabase
     .from('products')
-    .upsert(rows, { onConflict: 'sku', ignoreDuplicates: false })
+    .upsert(rows, { onConflict: 'slug', ignoreDuplicates: false })
     .select()
   if (error) throw error
   return data
