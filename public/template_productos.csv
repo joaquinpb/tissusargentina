@@ -1,4 +1,4 @@
-Nombre,Categoría,Precio,Stock,Descripción,SKU
-Mesa de Pool 8 pies,Mesas de Pool,1500000,5,Mesa de pool profesional de madera maciza con paño de lana.,POOL-001
-Taco de Pool Classic,Accesorios,45000,15,"Taco de pool de una pieza, madera seleccionada.",TACO-001
-Juego de Bolas de Pool,Accesorios,85000,8,Estuche de bolas de pool reglamentarias importadas.,BOLAS-001
+Nombre,Categoría,Precio,Stock,Descripción,SKU,Imágenes
+Mesa de Pool 8 pies,Mesas de Pool,1500000,5,Mesa de pool profesional de madera maciza con paño de lana.,POOL-001,https://images.unsplash.com/photo-1544698310-74ea9d1c8258
+Taco de Pool Classic,Accesorios,45000,15,"Taco de pool de una pieza, madera seleccionada.",TACO-001,https://images.unsplash.com/photo-1577712398418-7ab1a49db2bd
+Juego de Bolas de Pool,Accesorios,85000,8,Estuche de bolas de pool reglamentarias importadas.,BOLAS-001,https://images.unsplash.com/photo-1563861826100-9cb868fdcd1d

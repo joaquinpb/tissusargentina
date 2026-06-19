@@ -80,6 +80,9 @@ export function CsvImportDialog({ open, onClose }) {
                   El precio debe escribirse sin símbolos ni comas de miles (ej. <strong>1500000</strong>). Déjalo en blanco si prefieres mostrar "Consultar precio".
                 </li>
                 <li>
+                  <strong>Imágenes:</strong> Puedes incluir una columna llamada <strong>Imágenes</strong> o <strong>images</strong> con URLs públicas de las fotos (ej. <code>https://dominio.com/foto1.jpg</code>). Si son varias fotos por producto, sepáralas por comas.
+                </li>
+                <li>
                   <strong>Cómo guardar CSV en Excel:</strong> Si editas el archivo en Excel y decides exportarlo como CSV, ve a <strong>Archivo &gt; Guardar como</strong>, elige tu carpeta, y en el desplegable de tipo de archivo selecciona <strong>CSV (delimitado por comas) (*.csv)</strong>.
                 </li>
               </ul>
@@ -136,6 +139,7 @@ export function CsvImportDialog({ open, onClose }) {
                 <table className="w-full text-xs">
                   <thead className="bg-muted/70 text-muted-foreground font-semibold border-b border-border">
                     <tr>
+                      <th className="text-left p-2.5 w-12">Foto</th>
                       <th className="text-left p-2.5">Nombre</th>
                       <th className="text-left p-2.5">Categoría</th>
                       <th className="text-right p-2.5">Precio</th>
@@ -145,6 +149,21 @@ export function CsvImportDialog({ open, onClose }) {
                   <tbody className="divide-y divide-border bg-card">
                     {rows.slice(0, 5).map((r, i) => (
                       <tr key={i} className="hover:bg-muted/30 transition-colors">
+                        <td className="p-2.5">
+                          {r.images?.[0] ? (
+                            <img
+                              src={r.images[0]}
+                              alt={r.name}
+                              className="h-8 w-8 object-cover rounded-md border"
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = '';
+                              }}
+                            />
+                          ) : (
+                            <span className="text-[10px] text-muted-foreground">—</span>
+                          )}
+                        </td>
                         <td className="p-2.5 font-medium">{r.name || <span className="text-destructive">—</span>}</td>
                         <td className="p-2.5 text-muted-foreground">
                           {categories.find(c => c.id === r.category_id)?.name || '—'}
@@ -155,7 +174,7 @@ export function CsvImportDialog({ open, onClose }) {
                     ))}
                     {rows.length > 5 && (
                       <tr>
-                        <td colSpan={4} className="p-3 text-center text-xs text-muted-foreground bg-muted/20 border-t border-border">
+                        <td colSpan={5} className="p-3 text-center text-xs text-muted-foreground bg-muted/20 border-t border-border">
                           ... y {rows.length - 5} productos más en la lista.
                         </td>
                       </tr>

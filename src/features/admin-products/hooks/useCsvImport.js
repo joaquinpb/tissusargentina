@@ -39,6 +39,17 @@ export function useCsvImport(categories = []) {
 
       if (!name) errs.push(`Fila ${i + 1}: falta el nombre`)
 
+      // Parse images (comma-separated URLs)
+      const rawImages = row['images'] || row['Imágenes'] || row['imagenes'] || row['Imágenes (separadas por coma)'] || row['imagenes_urls'] || ''
+      let imagesList = []
+      if (typeof rawImages === 'string' && rawImages.trim()) {
+        imagesList = rawImages.split(',').map(img => img.trim()).filter(Boolean)
+      } else if (typeof rawImages === 'number') {
+        imagesList = [String(rawImages)]
+      } else if (Array.isArray(rawImages)) {
+        imagesList = rawImages.map(img => String(img).trim()).filter(Boolean)
+      }
+
       return {
         name,
         slug: slugify(name),
@@ -48,7 +59,7 @@ export function useCsvImport(categories = []) {
         description: row['description'] || row['Descripción'] || row['descripcion'] || '',
         sku: row['sku'] || row['SKU'] || '',
         is_active: true,
-        images: [],
+        images: imagesList,
         specifications: {},
       }
     })
