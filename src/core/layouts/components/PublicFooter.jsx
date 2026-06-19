@@ -1,4 +1,3 @@
-import { ShoppingBag } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { APP_ROUTES } from '@/core/lib/routes'
 
@@ -7,9 +6,9 @@ export function PublicFooter() {
     <footer className="border-t mt-auto">
       <div className="container mx-auto px-4 py-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div>
-          <Link to={APP_ROUTES.HOME()} className="flex items-center gap-2 font-bold text-lg">
-            <ShoppingBag className="h-5 w-5" />
-            Tissus
+          <Link to={APP_ROUTES.HOME()} className="flex items-center gap-2">
+            <img src="/logo-compacto.png" alt="Tissus" className="h-7 w-auto object-contain dark:invert" />
+            <span className="font-bold text-lg">Tissus</span>
           </Link>
           <p className="text-sm text-muted-foreground mt-1">Mesas de pool, ping pong y accesorios</p>
         </div>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, Navigate, useSearchParams } from 'react-router-dom'
-import { ShoppingBag, ArrowLeft } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { LoginForm } from '@/features/auth/components/LoginForm'
 import { RegisterForm } from '@/features/auth/components/RegisterForm'
 import { ForgotForm } from '@/features/auth/components/ForgotForm'
@@ -80,11 +80,8 @@ export default function LoginPage() {
         </div>
 
         {/* Logo */}
-        <Link to={APP_ROUTES.HOME()} className="relative z-20 flex items-center gap-2.5 font-bold text-2xl tracking-tight">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 backdrop-blur-md border border-white/20 shadow-inner">
-            <ShoppingBag className="h-5.5 w-5.5 text-white" />
-          </div>
-          <span className="font-heading">Tissus</span>
+        <Link to={APP_ROUTES.HOME()} className="relative z-20 flex items-center gap-2.5">
+          <img src="/logo.png" alt="Tissus" className="h-10 w-auto object-contain invert" />
         </Link>
 
         {/* Inspiring blockquote */}
@@ -106,9 +103,8 @@ export default function LoginPage() {
         <div className="w-full max-w-[420px] flex flex-col gap-6">
           {/* Logo on mobile only */}
           <div className="flex flex-col items-center gap-2 text-center lg:hidden">
-            <Link to={APP_ROUTES.HOME()} className="flex items-center gap-2 font-bold text-2xl">
-              <ShoppingBag className="h-7 w-7 text-primary" />
-              Tissus
+            <Link to={APP_ROUTES.HOME()} className="flex items-center gap-2">
+              <img src="/logo.png" alt="Tissus" className="h-10 w-auto object-contain dark:invert" />
             </Link>
           </div>
 

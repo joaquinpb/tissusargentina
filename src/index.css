@@ -133,3 +133,11 @@
   right: 0 !important;
   transform: translate(35%, -35%) !important;
 }
+
+@utility scrollbar-none {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

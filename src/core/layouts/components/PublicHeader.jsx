@@ -1,6 +1,5 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom'
-import { ShoppingBag, User, LogOut, Settings, Menu, X } from 'lucide-react'
-import { useState } from 'react'
+import { User, LogOut, Settings } from 'lucide-react'
 import { Button } from '@/core/components/ui/button'
 import {
   DropdownMenu,
@@ -22,7 +21,6 @@ const NAV_LINKS = [
 export function PublicHeader() {
   const { session, isAdmin, logout } = useAuth()
   const navigate = useNavigate()
-  const [menuOpen, setMenuOpen] = useState(false)
 
   const handleLogout = async () => {
     await logout()
@@ -32,9 +30,9 @@ export function PublicHeader() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-14 items-center justify-between px-4">
-        <Link to={APP_ROUTES.HOME()} className="flex items-center gap-2 font-bold text-lg tracking-tight">
-          <ShoppingBag className="h-5 w-5" />
-          Tissus
+        <Link to={APP_ROUTES.HOME()} className="flex items-center gap-2">
+          <img src="/logo-compacto.png" alt="Tissus" className="h-8 w-auto object-contain dark:invert" />
+          <span className="font-bold text-lg tracking-tight">Tissus</span>
         </Link>
 
         {/* Nav desktop */}
@@ -85,37 +83,8 @@ export function PublicHeader() {
               Ingresar
             </Button>
           )}
-
-          {/* Hamburguesa móvil */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setMenuOpen((v) => !v)}
-          >
-            {menuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-          </Button>
         </div>
       </div>
-
-      {/* Nav móvil */}
-      {menuOpen && (
-        <div className="md:hidden border-t px-4 py-3 flex flex-col gap-3 text-sm bg-background">
-          {NAV_LINKS.map(({ to, label, exact }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={exact}
-              onClick={() => setMenuOpen(false)}
-              className={({ isActive }) =>
-                cn('transition-colors', isActive ? 'text-foreground font-medium' : 'text-muted-foreground')
-              }
-            >
-              {label}
-            </NavLink>
-          ))}
-        </div>
-      )}
     </header>
   )
 }

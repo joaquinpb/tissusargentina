@@ -1,5 +1,5 @@
-import { NavLink, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Package, Tag, MessageSquare, LogOut, ShoppingBag } from 'lucide-react'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { LayoutDashboard, Package, Tag, MessageSquare, LogOut } from 'lucide-react'
 import { Button } from '@/core/components/ui/button'
 import { Separator } from '@/core/components/ui/separator'
 import { useAuth } from '@/core/context/AuthContext'
@@ -24,9 +24,11 @@ export function AdminSidebar() {
 
   return (
     <aside className="flex h-screen w-56 flex-col border-r bg-sidebar">
-      <div className="flex h-14 items-center gap-2 px-4 font-bold text-lg border-b">
-        <ShoppingBag className="h-5 w-5" />
-        Tissus Admin
+      <div className="flex h-14 items-center px-4 border-b">
+        <Link to={APP_ROUTES.HOME()} className="flex items-center gap-2">
+          <img src="/logo-compacto.png" alt="Tissus" className="h-6 w-auto object-contain dark:invert" />
+          <span className="font-bold text-base tracking-tight text-sidebar-foreground">Tissus Admin</span>
+        </Link>
       </div>
       <nav className="flex-1 px-2 py-4 flex flex-col gap-1">
         {NAV_ITEMS.map(({ to, label, icon: Icon, exact }) => (

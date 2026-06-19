@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/core/components/ui/button'
-import { ProductGrid } from '@/features/catalog/components/ProductGrid'
+import { ProductCarousel } from '@/features/catalog/components/ProductCarousel'
 import { useFeaturedProducts } from '@/core/hooks/queries/useProductsQueries'
 import { APP_ROUTES } from '@/core/lib/routes'
 
@@ -22,48 +22,67 @@ export default function HomePage() {
     <div className="flex flex-col">
       {/* Hero */}
       <section className="bg-muted/40 border-b">
-        <div className="container mx-auto px-4 py-20 flex flex-col items-center text-center gap-6 max-w-2xl">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight">
-            Mesas de pool, ping pong y accesorios
-          </h1>
-          <p className="text-lg text-muted-foreground">
-            La mejor calidad para tu hogar, club o negocio. Consultanos sin compromiso.
-          </p>
-          <div className="flex gap-3 flex-wrap justify-center">
-            <Button asChild size="lg">
-              <Link to={APP_ROUTES.CATALOG()}>
-                Ver catálogo <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-            <Button variant="outline" size="lg" asChild>
-              <a
-                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Hola, quiero consultar sobre sus productos.')}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <WhatsAppIcon className="mr-2 h-4 w-4" /> WhatsApp
-              </a>
-            </Button>
+        <div className="container mx-auto px-4 py-16 flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 max-w-4xl">
+          {/* Logo on the left */}
+          <div className="flex-shrink-0">
+            <img
+              src="/logo.png"
+              alt="Tissus Argentina"
+              className="h-24 md:h-36 w-auto object-contain dark:invert animate-in fade-in slide-in-from-left-4 duration-1000"
+            />
+          </div>
+          
+          {/* Content on the right */}
+          <div className="flex flex-col items-center md:items-start text-center md:text-left gap-4 max-w-xl">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight">
+              Mesas de pool, ping pong y accesorios
+            </h1>
+            <p className="text-lg text-muted-foreground">
+              La mejor calidad para tu hogar, club o negocio. Consultanos sin compromiso.
+            </p>
+            
+            {/* Buttons below the text */}
+            <div className="flex gap-3 flex-wrap mt-2 justify-center md:justify-start">
+              <Button asChild size="lg">
+                <Link to={APP_ROUTES.CATALOG()}>
+                  Ver catálogo <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+              <Button variant="outline" size="lg" asChild>
+                <a
+                  href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Hola, quiero consultar sobre sus productos.')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <WhatsAppIcon className="mr-2 h-4 w-4" /> WhatsApp
+                </a>
+              </Button>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Productos destacados */}
       {(isLoading || featured?.length > 0) && (
-        <section className="container mx-auto px-4 py-12">
+        <section className="container mx-auto px-4 py-12 overflow-hidden">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold">Productos destacados</h2>
             <Button variant="ghost" size="sm" asChild>
               <Link to={APP_ROUTES.CATALOG()}>Ver todos <ArrowRight className="ml-1 h-3 w-3" /></Link>
             </Button>
           </div>
-          <ProductGrid products={featured} isLoading={isLoading} />
+          <ProductCarousel products={featured} isLoading={isLoading} />
         </section>
       )}
 
       {/* CTA final */}
       <section className="border-t bg-muted/30">
         <div className="container mx-auto px-4 py-12 text-center flex flex-col items-center gap-4">
+          <img
+            src="/logo-compacto.png"
+            alt="Tissus"
+            className="h-10 w-auto object-contain opacity-50 dark:invert mb-1"
+          />
           <h2 className="text-2xl font-bold">¿Tenés alguna duda?</h2>
           <p className="text-muted-foreground">Contactanos y te asesoramos sin compromiso.</p>
           <Button asChild>
