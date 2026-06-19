@@ -61,7 +61,7 @@ export async function submitContactRequest(payload) {
 export async function fetchUserRequests(userId) {
   const { data, error } = await supabase
     .from('contact_requests')
-    .select('*, products(id, name, slug, images)')
+    .select('*, products(id, name, slug, images, price, sku)')
     .eq('user_id', userId)
     .order('created_at', { ascending: false })
   if (error) throw error
