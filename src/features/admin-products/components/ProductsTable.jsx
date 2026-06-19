@@ -1,26 +1,41 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { toast } from 'sonner'
-import { Pencil, Trash2, Eye, EyeOff } from 'lucide-react'
+import { Pencil, Trash2, Eye, EyeOff, Star } from 'lucide-react'
 import { Button } from '@/core/components/ui/button'
 import { Badge } from '@/core/components/ui/badge'
 import { Input } from '@/core/components/ui/input'
 import { Skeleton } from '@/core/components/ui/skeleton'
 import { useConfirm } from '@/core/context/ConfirmContext'
 import { useProductMutations } from '@/core/hooks/queries/useProductsQueries'
+import { useAdminCategories } from '@/core/hooks/queries/useCategoriesQueries'
 import { formatPrice } from '@/core/lib/utils'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/core/components/ui/select'
 
 function StockCell({ product }) {
   const { update } = useProductMutations()
   const [value, setValue] = useState(product.stock)
   const [editing, setEditing] = useState(false)
 
+  // Keep state in sync if product stock changes externally
+  useEffect(() => {
+    setValue(product.stock)
+  }, [product.stock])
+
   const save = async () => {
     setEditing(false)
     if (Number(value) !== product.stock) {
       try {
         await update.mutateAsync({ id: product.id, stock: Number(value) })
+        toast.success('Stock actualizado')
       } catch {
         setValue(product.stock)
+        toast.error('Error al actualizar stock')
       }
     }
   }
@@ -34,7 +49,7 @@ function StockCell({ product }) {
         onChange={(e) => setValue(e.target.value)}
         onBlur={save}
         onKeyDown={(e) => e.key === 'Enter' && save()}
-        className="w-20 h-7 text-xs"
+        className="w-20 h-7 text-xs ml-auto"
         autoFocus
       />
     )
@@ -47,13 +62,90 @@ function StockCell({ product }) {
   )
 }
 
+function CategoryCell({ product, categories }) {
+  const { update } = useProductMutations()
+  const [value, setValue] = useState(product.category_id || 'none')
+
+  // Keep state in sync if product category changes externally
+  useEffect(() => {
+    setValue(product.category_id || 'none')
+  }, [product.category_id])
+
+  const handleCategoryChange = async (newCategoryId) => {
+    const prevValue = value
+    setValue(newCategoryId)
+    const categoryId = newCategoryId === 'none' ? null : newCategoryId
+    try {
+      await update.mutateAsync({ id: product.id, category_id: categoryId })
+      toast.success('Categoría actualizada')
+    } catch {
+      setValue(prevValue)
+      toast.error('Error al actualizar categoría')
+    }
+  }
+
+  return (
+    <div className="w-44 select-none">
+      <Select value={value} onValueChange={handleCategoryChange}>
+        <SelectTrigger className="h-7 text-xs border bg-background/50 dark:bg-background/20 font-normal py-0">
+          <SelectValue placeholder="Sin categoría" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="none" className="text-xs">Sin categoría</SelectItem>
+          {categories.map((c) => (
+            <SelectItem key={c.id} value={c.id} className="text-xs">
+              {c.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  )
+}
+
+function FeaturedCell({ product }) {
+  const { update } = useProductMutations()
+  const [featured, setFeatured] = useState(product.is_featured)
+
+  // Keep state in sync if product featured state changes externally
+  useEffect(() => {
+    setFeatured(product.is_featured)
+  }, [product.is_featured])
+
+  const handleToggleFeatured = async (e) => {
+    const isChecked = e.target.checked
+    setFeatured(isChecked)
+    try {
+      await update.mutateAsync({ id: product.id, is_featured: isChecked })
+      toast.success(isChecked ? 'Marcado como destacado' : 'Removido de destacados')
+    } catch {
+      setFeatured(product.is_featured)
+      toast.error('Error al actualizar destacados')
+    }
+  }
+
+  return (
+    <div className="flex items-center justify-center">
+      <input
+        type="checkbox"
+        checked={featured}
+        onChange={handleToggleFeatured}
+        className="h-4 w-4 rounded border-zinc-300 text-primary focus:ring-primary accent-primary cursor-pointer transition-transform duration-200 hover:scale-110"
+        title="Marcar como destacado"
+      />
+    </div>
+  )
+}
+
 export function ProductsTable({ products, isLoading, onEdit }) {
   const confirm = useConfirm()
   const { update, remove } = useProductMutations()
+  const { data: categories = [] } = useAdminCategories()
 
   const handleToggleActive = async (product) => {
     try {
       await update.mutateAsync({ id: product.id, is_active: !product.is_active })
+      toast.success(product.is_active ? 'Producto desactivado' : 'Producto activado')
     } catch {
       toast.error('Error al cambiar estado')
     }
@@ -65,6 +157,8 @@ export function ProductsTable({ products, isLoading, onEdit }) {
       description: `¿Eliminás "${product.name}"? Esta acción no se puede deshacer.`,
       confirmText: 'Eliminar',
       variant: 'destructive',
+      confirmButtonClass: 'cursor-pointer',
+      cancelButtonClass: 'cursor-pointer',
     })
     if (!ok) return
     try {
@@ -88,7 +182,7 @@ export function ProductsTable({ products, isLoading, onEdit }) {
   }
 
   return (
-    <div className="border rounded-lg overflow-hidden">
+    <div className="border rounded-lg overflow-hidden bg-card">
       <table className="w-full text-sm">
         <thead className="bg-muted text-xs">
           <tr>
@@ -96,6 +190,7 @@ export function ProductsTable({ products, isLoading, onEdit }) {
             <th className="text-left p-3 hidden md:table-cell">Categoría</th>
             <th className="text-right p-3">Precio</th>
             <th className="text-right p-3">Stock</th>
+            <th className="text-center p-3">Destacado</th>
             <th className="text-center p-3">Estado</th>
             <th className="text-right p-3">Acciones</th>
           </tr>
@@ -113,11 +208,14 @@ export function ProductsTable({ products, isLoading, onEdit }) {
                   <span className="font-medium line-clamp-1">{p.name}</span>
                 </div>
               </td>
-              <td className="p-3 text-muted-foreground hidden md:table-cell">
-                {p.categories?.name || '—'}
+              <td className="p-3 hidden md:table-cell">
+                <CategoryCell product={p} categories={categories} />
               </td>
-              <td className="p-3 text-right">{formatPrice(p.price)}</td>
+              <td className="p-3 text-right font-medium">{formatPrice(p.price)}</td>
               <td className="p-3 text-right"><StockCell product={p} /></td>
+              <td className="p-3 text-center">
+                <FeaturedCell product={p} />
+              </td>
               <td className="p-3 text-center">
                 <Badge variant={p.is_active ? 'default' : 'secondary'}>
                   {p.is_active ? 'Activo' : 'Inactivo'}
