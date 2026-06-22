@@ -62,6 +62,52 @@ function StockCell({ product }) {
   )
 }
 
+function PriceCell({ product }) {
+  const { update } = useProductMutations()
+  const [value, setValue] = useState(product.price)
+  const [editing, setEditing] = useState(false)
+
+  // Keep state in sync if product price changes externally
+  useEffect(() => {
+    setValue(product.price)
+  }, [product.price])
+
+  const save = async () => {
+    setEditing(false)
+    if (Number(value) !== product.price) {
+      try {
+        await update.mutateAsync({ id: product.id, price: Number(value) })
+        toast.success('Precio actualizado')
+      } catch {
+        setValue(product.price)
+        toast.error('Error al actualizar precio')
+      }
+    }
+  }
+
+  if (editing) {
+    return (
+      <Input
+        type="number"
+        min="0"
+        step="0.01"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onBlur={save}
+        onKeyDown={(e) => e.key === 'Enter' && save()}
+        className="w-24 h-7 text-xs ml-auto"
+        autoFocus
+      />
+    )
+  }
+
+  return (
+    <button onClick={() => setEditing(true)} className="text-sm font-medium hover:underline underline-offset-2">
+      {formatPrice(product.price)}
+    </button>
+  )
+}
+
 function CategoryCell({ product, categories }) {
   const { update } = useProductMutations()
   const [value, setValue] = useState(product.category_id || 'none')
@@ -211,7 +257,7 @@ export function ProductsTable({ products, isLoading, onEdit }) {
               <td className="p-3 hidden md:table-cell">
                 <CategoryCell product={p} categories={categories} />
               </td>
-              <td className="p-3 text-right font-medium">{formatPrice(p.price)}</td>
+              <td className="p-3 text-right"><PriceCell product={p} /></td>
               <td className="p-3 text-right"><StockCell product={p} /></td>
               <td className="p-3 text-center">
                 <FeaturedCell product={p} />
