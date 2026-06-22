@@ -6,6 +6,14 @@ import { ProductsTable } from '@/features/admin-products/components/ProductsTabl
 import { ProductFormSheet } from '@/features/admin-products/components/ProductFormSheet'
 import { CsvImportDialog } from '@/features/admin-products/components/CsvImportDialog'
 import { useAdminProducts } from '@/core/hooks/queries/useProductsQueries'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/core/components/ui/select'
+import { useMemo } from 'react'
 
 export default function AdminProductsPage() {
   const { data: products, isLoading } = useAdminProducts()
@@ -13,10 +21,21 @@ export default function AdminProductsPage() {
   const [sheetOpen, setSheetOpen] = useState(false)
   const [csvOpen, setCsvOpen] = useState(false)
   const [search, setSearch] = useState('')
+  const [sortBy, setSortBy] = useState('name_asc')
 
-  const filtered = search
-    ? products?.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()))
-    : products
+  const filtered = useMemo(() => {
+    let result = products ? [...products] : []
+    if (search) {
+      result = result.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()))
+    }
+    result.sort((a, b) => {
+      if (sortBy === 'name_asc') return a.name.localeCompare(b.name)
+      if (sortBy === 'price_asc') return a.price - b.price
+      if (sortBy === 'price_desc') return b.price - a.price
+      return 0
+    })
+    return result
+  }, [products, search, sortBy])
 
   const handleEdit = (product) => {
     setEditProduct(product)
@@ -45,12 +64,26 @@ export default function AdminProductsPage() {
         </div>
       </div>
 
-      <Input
-        placeholder="Buscar por nombre..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="max-w-xs"
-      />
+      <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+        <Input
+          placeholder="Buscar por nombre..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="max-w-xs"
+        />
+        <div className="w-full sm:w-48">
+          <Select value={sortBy} onValueChange={setSortBy}>
+            <SelectTrigger>
+              <SelectValue placeholder="Ordenar por" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="name_asc">Alfabético (A-Z)</SelectItem>
+              <SelectItem value="price_asc">Precio: Menor a mayor</SelectItem>
+              <SelectItem value="price_desc">Precio: Mayor a menor</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
       <ProductsTable products={filtered} isLoading={isLoading} onEdit={handleEdit} />
 

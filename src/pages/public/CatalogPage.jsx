@@ -13,6 +13,7 @@ export default function CatalogPage() {
     search, setSearch,
     selectedCategory, setCategory,
     inStockOnly, setInStockOnly,
+    sortBy, setSortBy,
     filtered,
   } = useCatalogFilters(products)
 
@@ -34,6 +35,8 @@ export default function CatalogPage() {
         onSearchChange={setSearch}
         inStockOnly={inStockOnly}
         onInStockChange={setInStockOnly}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
       />
 
       <ProductGrid products={filtered} isLoading={isLoading} />

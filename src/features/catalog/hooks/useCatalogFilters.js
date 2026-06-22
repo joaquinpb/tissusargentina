@@ -5,6 +5,7 @@ export function useCatalogFilters(products = []) {
   const [searchParams, setSearchParams] = useSearchParams()
   const [search, setSearch] = useState('')
   const [inStockOnly, setInStockOnly] = useState(false)
+  const [sortBy, setSortBy] = useState('name_asc')
 
   const selectedCategory = searchParams.get('categoria') || ''
 
@@ -14,13 +15,26 @@ export function useCatalogFilters(products = []) {
   }
 
   const filtered = useMemo(() => {
-    return products.filter((p) => {
+    let result = products.filter((p) => {
       if (selectedCategory && p.categories?.slug !== selectedCategory) return false
       if (inStockOnly && p.stock <= 0) return false
       if (search && !p.name.toLowerCase().includes(search.toLowerCase())) return false
       return true
     })
-  }, [products, selectedCategory, inStockOnly, search])
 
-  return { search, setSearch, selectedCategory, setCategory, inStockOnly, setInStockOnly, filtered }
+    result.sort((a, b) => {
+      if (sortBy === 'name_asc') {
+        return a.name.localeCompare(b.name)
+      } else if (sortBy === 'price_asc') {
+        return a.price - b.price
+      } else if (sortBy === 'price_desc') {
+        return b.price - a.price
+      }
+      return 0
+    })
+
+    return result
+  }, [products, selectedCategory, inStockOnly, search, sortBy])
+
+  return { search, setSearch, selectedCategory, setCategory, inStockOnly, setInStockOnly, sortBy, setSortBy, filtered }
 }
