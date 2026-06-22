@@ -23,7 +23,7 @@ export function AdminSidebar() {
   }
 
   return (
-    <aside className="flex h-screen w-56 flex-col border-r bg-sidebar">
+    <aside className="hidden md:flex h-screen w-56 flex-col border-r bg-sidebar">
       <div className="flex h-14 items-center px-4 border-b">
         <Link to={APP_ROUTES.HOME()} className="flex items-center gap-2">
           <img src="/logo-compacto.png" alt="Tissus" className="h-6 w-auto object-contain dark:invert" />
