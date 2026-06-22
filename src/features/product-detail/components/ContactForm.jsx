@@ -11,8 +11,8 @@ import { useAuth } from '@/core/context/AuthContext'
 
 const schema = z.object({
   name: z.string().min(2, 'Ingresá tu nombre'),
-  email: z.string().email('Email inválido'),
-  phone: z.string().optional(),
+  email: z.union([z.literal(''), z.string().email('Email inválido')]),
+  phone: z.string().min(8, 'Ingresá un teléfono válido'),
   message: z.string().min(10, 'El mensaje debe tener al menos 10 caracteres'),
 })
 
@@ -52,14 +52,15 @@ export function ContactForm({ product }) {
           {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
         </div>
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="email">Email *</Label>
+          <Label htmlFor="email">Email</Label>
           <Input id="email" type="email" {...register('email')} placeholder="tu@email.com" />
           {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
         </div>
       </div>
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="phone">Teléfono / WhatsApp</Label>
-        <Input id="phone" {...register('phone')} placeholder="+54 9 11 ..." />
+        <Label htmlFor="phone">Teléfono / WhatsApp *</Label>
+        <Input id="phone" type="tel" {...register('phone')} placeholder="+54 9 11 ..." />
+        {errors.phone && <p className="text-xs text-destructive">{errors.phone.message}</p>}
       </div>
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="message">Mensaje *</Label>
