@@ -4,12 +4,20 @@ import { Skeleton } from '@/core/components/ui/skeleton'
 import { useAdminProducts } from '@/core/hooks/queries/useProductsQueries'
 import { useAdminRequests } from '@/core/hooks/queries/useContactRequestsQueries'
 
-function StatCard({ title, value, icon: Icon, description, loading }) {
+function StatCard({ title, value, icon: Icon, description, loading, indicator }) {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        <Icon className="h-4 w-4 text-muted-foreground" />
+        <div className="relative">
+          <Icon className="h-4 w-4 text-muted-foreground" />
+          {indicator && (
+            <span className="absolute -top-1 -right-1 flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+            </span>
+          )}
+        </div>
       </CardHeader>
       <CardContent>
         {loading ? <Skeleton className="h-8 w-12" /> : (
@@ -46,6 +54,7 @@ export default function AdminDashboard() {
           icon={MessageSquare}
           description="Sin responder"
           loading={requestsLoading}
+          indicator={pendingRequests > 0}
         />
         <StatCard
           title="Productos activos"

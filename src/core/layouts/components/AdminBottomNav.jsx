@@ -2,8 +2,12 @@ import { NavLink } from 'react-router-dom'
 import { LayoutDashboard, Package, Tag, MessageSquare } from 'lucide-react'
 import { APP_ROUTES } from '@/core/lib/routes'
 import { cn } from '@/core/lib/utils'
+import { useAdminRequests } from '@/core/hooks/queries/useContactRequestsQueries'
 
 export function AdminBottomNav() {
+  const { data: requests } = useAdminRequests()
+  const hasPendingRequests = requests?.some((r) => r.status === 'pending')
+
   const navItems = [
     { to: APP_ROUTES.ADMIN.DASHBOARD(), label: 'Dashboard', icon: LayoutDashboard, exact: true },
     { to: APP_ROUTES.ADMIN.PRODUCTS(), label: 'Productos', icon: Package },
@@ -25,7 +29,15 @@ export function AdminBottomNav() {
             )
           }
         >
-          <Icon className="h-5 w-5" />
+          <div className="relative">
+            <Icon className="h-5 w-5" />
+            {label === 'Consultas' && hasPendingRequests && (
+              <span className="absolute -top-1 -right-1 flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+              </span>
+            )}
+          </div>
           <span className="text-[10px] tracking-tight">{label}</span>
         </NavLink>
       ))}
