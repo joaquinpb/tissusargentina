@@ -30,14 +30,27 @@ export function useCsvImport(categories = []) {
 
   const processRows = (raw) => {
     const errs = []
-    const processed = raw.map((row, i) => {
+    const processed = []
+    const seenSlugs = new Set()
+
+    raw.forEach((row, i) => {
       const name = row['name'] || row['Nombre'] || row['nombre'] || ''
       const categoryName = row['category'] || row['Categoría'] || row['categoria'] || ''
       const category = categories.find(
         (c) => c.name.toLowerCase() === categoryName.toLowerCase()
       )
 
-      if (!name) errs.push(`Fila ${i + 1}: falta el nombre`)
+      if (!name) {
+        errs.push(`Fila ${i + 1}: falta el nombre`)
+        return
+      }
+
+      const slug = slugify(name)
+      if (seenSlugs.has(slug)) {
+        errs.push(`Fila ${i + 1}: El producto "${name}" tiene un nombre/slug duplicado y fue omitido para evitar conflictos de base de datos.`)
+        return
+      }
+      seenSlugs.add(slug)
 
       // Parse images (comma-separated URLs)
       const rawImages = row['images'] || row['Imágenes'] || row['imagenes'] || row['Imágenes (separadas por coma)'] || row['imagenes_urls'] || ''
@@ -50,9 +63,9 @@ export function useCsvImport(categories = []) {
         imagesList = rawImages.map(img => String(img).trim()).filter(Boolean)
       }
 
-      return {
+      processed.push({
         name,
-        slug: slugify(name),
+        slug,
         category_id: category?.id || null,
         price: parseFloat(row['price'] || row['Precio'] || row['precio']) || null,
         stock: parseInt(row['stock'] || row['Stock']) || 0,
@@ -61,7 +74,7 @@ export function useCsvImport(categories = []) {
         is_active: true,
         images: imagesList,
         specifications: {},
-      }
+      })
     })
 
     setErrors(errs)
