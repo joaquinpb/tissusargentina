@@ -18,7 +18,7 @@ export function AdminSidebar() {
   const { logout } = useAuth()
   const navigate = useNavigate()
   const { data: requests } = useAdminRequests()
-  const hasPendingRequests = requests?.some((r) => r.status === 'pending')
+  const hasPendingRequests = requests?.some((r) => ['pending', 'contacted'].includes(r.status))
 
   const handleLogout = async () => {
     await logout()

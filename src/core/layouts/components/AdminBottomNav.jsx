@@ -6,7 +6,7 @@ import { useAdminRequests } from '@/core/hooks/queries/useContactRequestsQueries
 
 export function AdminBottomNav() {
   const { data: requests } = useAdminRequests()
-  const hasPendingRequests = requests?.some((r) => r.status === 'pending')
+  const hasPendingRequests = requests?.some((r) => ['pending', 'contacted'].includes(r.status))
 
   const navItems = [
     { to: APP_ROUTES.ADMIN.DASHBOARD(), label: 'Dashboard', icon: LayoutDashboard, exact: true },

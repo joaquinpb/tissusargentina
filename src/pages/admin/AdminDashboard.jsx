@@ -35,7 +35,7 @@ export default function AdminDashboard() {
   const { data: products, isLoading: productsLoading } = useAdminProducts()
   const { data: requests, isLoading: requestsLoading } = useAdminRequests()
 
-  const pendingRequests = requests?.filter((r) => r.status === 'pending').length ?? 0
+  const activeRequests = requests?.filter((r) => ['pending', 'contacted'].includes(r.status)).length ?? 0
   const lowStock = products?.filter((p) => p.is_active && p.stock === 0).length ?? 0
   const inactiveProducts = products?.filter((p) => !p.is_active).length ?? 0
   const totalProducts = products?.filter((p) => p.is_active).length ?? 0
@@ -49,12 +49,12 @@ export default function AdminDashboard() {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <StatCard
-          title="Consultas pendientes"
-          value={pendingRequests}
+          title="Consultas activas"
+          value={activeRequests}
           icon={MessageSquare}
-          description="Sin responder"
+          description="Pendientes y en contacto"
           loading={requestsLoading}
-          indicator={pendingRequests > 0}
+          indicator={activeRequests > 0}
         />
         <StatCard
           title="Productos activos"
