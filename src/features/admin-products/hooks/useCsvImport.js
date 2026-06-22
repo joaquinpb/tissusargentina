@@ -30,8 +30,7 @@ export function useCsvImport(categories = []) {
 
   const processRows = (raw) => {
     const errs = []
-    const processed = []
-    const seenSlugs = new Set()
+    const processedMap = new Map()
 
     raw.forEach((row, i) => {
       const name = row['name'] || row['Nombre'] || row['nombre'] || ''
@@ -46,11 +45,6 @@ export function useCsvImport(categories = []) {
       }
 
       const slug = slugify(name)
-      if (seenSlugs.has(slug)) {
-        errs.push(`Fila ${i + 1}: El producto "${name}" tiene un nombre/slug duplicado y fue omitido para evitar conflictos de base de datos.`)
-        return
-      }
-      seenSlugs.add(slug)
 
       // Parse images (comma-separated URLs)
       const rawImages = row['images'] || row['Imágenes'] || row['imagenes'] || row['Imágenes (separadas por coma)'] || row['imagenes_urls'] || ''
@@ -63,7 +57,11 @@ export function useCsvImport(categories = []) {
         imagesList = rawImages.map(img => String(img).trim()).filter(Boolean)
       }
 
-      processed.push({
+      if (processedMap.has(slug)) {
+        errs.push(`Fila ${i + 1}: El producto "${name}" está repetido en el archivo. Se utilizará esta última fila para actualizar sus datos.`)
+      }
+
+      processedMap.set(slug, {
         name,
         slug,
         category_id: category?.id || null,
@@ -78,7 +76,7 @@ export function useCsvImport(categories = []) {
     })
 
     setErrors(errs)
-    setRows(processed)
+    setRows(Array.from(processedMap.values()))
   }
 
   const reset = () => {
