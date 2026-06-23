@@ -4,6 +4,7 @@ import { Button } from '@/core/components/ui/button'
 import { Input } from '@/core/components/ui/input'
 import { ProductsTable } from '@/features/admin-products/components/ProductsTable'
 import { ProductFormSheet } from '@/features/admin-products/components/ProductFormSheet'
+import { ProductImagesDialog } from '@/features/admin-products/components/ProductImagesDialog'
 import { CsvImportDialog } from '@/features/admin-products/components/CsvImportDialog'
 import { useAdminProducts } from '@/core/hooks/queries/useProductsQueries'
 import {
@@ -18,7 +19,9 @@ import { useMemo } from 'react'
 export default function AdminProductsPage() {
   const { data: products, isLoading } = useAdminProducts()
   const [editProduct, setEditProduct] = useState(null)
+  const [imagesProduct, setImagesProduct] = useState(null)
   const [sheetOpen, setSheetOpen] = useState(false)
+  const [imagesOpen, setImagesOpen] = useState(false)
   const [csvOpen, setCsvOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [sortBy, setSortBy] = useState('name_asc')
@@ -40,6 +43,11 @@ export default function AdminProductsPage() {
   const handleEdit = (product) => {
     setEditProduct(product)
     setSheetOpen(true)
+  }
+
+  const handleEditImages = (product) => {
+    setImagesProduct(product)
+    setImagesOpen(true)
   }
 
   const handleNew = () => {
@@ -85,12 +93,23 @@ export default function AdminProductsPage() {
         </div>
       </div>
 
-      <ProductsTable products={filtered} isLoading={isLoading} onEdit={handleEdit} />
+      <ProductsTable 
+        products={filtered} 
+        isLoading={isLoading} 
+        onEdit={handleEdit} 
+        onEditImages={handleEditImages}
+      />
 
       <ProductFormSheet
         product={editProduct}
         open={sheetOpen}
         onClose={() => { setSheetOpen(false); setEditProduct(null) }}
+      />
+
+      <ProductImagesDialog
+        product={imagesProduct}
+        open={imagesOpen}
+        onClose={() => { setImagesOpen(false); setImagesProduct(null) }}
       />
 
       <CsvImportDialog open={csvOpen} onClose={() => setCsvOpen(false)} />

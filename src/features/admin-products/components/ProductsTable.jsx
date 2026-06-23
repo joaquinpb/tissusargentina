@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { toast } from 'sonner'
-import { Pencil, Trash2, Eye, EyeOff, Star } from 'lucide-react'
+import { Pencil, Trash2, Eye, EyeOff, Star, Image as ImageIcon } from 'lucide-react'
 import { Button } from '@/core/components/ui/button'
 import { Badge } from '@/core/components/ui/badge'
 import { Input } from '@/core/components/ui/input'
@@ -183,7 +183,7 @@ function FeaturedCell({ product }) {
   )
 }
 
-export function ProductsTable({ products, isLoading, onEdit }) {
+export function ProductsTable({ products, isLoading, onEdit, onEditImages }) {
   const confirm = useConfirm()
   const { update, remove } = useProductMutations()
   const { data: categories = [] } = useAdminCategories()
@@ -246,11 +246,20 @@ export function ProductsTable({ products, isLoading, onEdit }) {
             <tr key={p.id} className="hover:bg-muted/30 transition-colors">
               <td className="p-3">
                 <div className="flex items-center gap-2">
-                  {p.images?.[0] ? (
-                    <img src={p.images[0]} alt="" className="w-8 h-8 rounded object-cover shrink-0" />
-                  ) : (
-                    <div className="w-8 h-8 rounded bg-muted shrink-0" />
-                  )}
+                  <button 
+                    type="button" 
+                    onClick={() => onEditImages(p)}
+                    className="shrink-0 hover:opacity-80 transition-opacity rounded focus:outline-none focus:ring-2 focus:ring-primary ring-offset-1"
+                    title="Administrar fotos"
+                  >
+                    {p.images?.[0] ? (
+                      <img src={p.images[0]} alt="" className="w-8 h-8 rounded object-cover" />
+                    ) : (
+                      <div className="w-8 h-8 rounded bg-muted flex items-center justify-center">
+                        <ImageIcon className="h-4 w-4 text-muted-foreground" />
+                      </div>
+                    )}
+                  </button>
                   <span className="font-medium line-clamp-1">{p.name}</span>
                 </div>
               </td>
