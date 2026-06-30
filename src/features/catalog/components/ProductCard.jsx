@@ -5,8 +5,10 @@ import { APP_ROUTES } from '@/core/lib/routes'
 import { formatPrice } from '@/core/lib/utils'
 
 export function ProductCard({ product }) {
-  const { name, slug, price, stock, images, categories } = product
+  const { name, slug, price, stock, images, categories, discount_percentage } = product
   const image = images?.[0]
+  const hasDiscount = discount_percentage > 0
+  const discountedPrice = hasDiscount ? price * (1 - discount_percentage / 100) : price
 
   return (
     <Link to={APP_ROUTES.PRODUCT(slug)}>
@@ -27,12 +29,24 @@ export function ProductCard({ product }) {
             </div>
           )}
         </div>
-        <CardContent className="p-3 flex flex-col gap-1 flex-1">
+        <CardContent className="p-3 flex flex-col gap-1 flex-1 relative">
+          {hasDiscount && (
+            <Badge className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 border-none shadow-sm z-10 font-bold px-2 py-0.5">-{discount_percentage}%</Badge>
+          )}
           {categories?.name && (
             <p className="text-xs text-muted-foreground">{categories.name}</p>
           )}
           <p className="font-medium text-sm leading-tight line-clamp-2">{name}</p>
-          <p className="text-sm font-semibold mt-auto pt-1">{formatPrice(price)}</p>
+          <div className="mt-auto pt-1 flex items-baseline gap-2">
+            {hasDiscount ? (
+              <>
+                <p className="text-sm font-bold text-red-500">{formatPrice(discountedPrice)}</p>
+                <p className="text-xs text-muted-foreground line-through decoration-muted-foreground/60">{formatPrice(price)}</p>
+              </>
+            ) : (
+              <p className="text-sm font-semibold">{formatPrice(price)}</p>
+            )}
+          </div>
         </CardContent>
       </Card>
     </Link>

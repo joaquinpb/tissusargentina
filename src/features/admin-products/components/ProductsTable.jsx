@@ -185,34 +185,57 @@ function FeaturedCell({ product }) {
 
 function PromotionCell({ product }) {
   const { update } = useProductMutations()
-  const [promotion, setPromotion] = useState(product.is_promotion)
+  const [value, setValue] = useState(product.discount_percentage || 0)
+  const [editing, setEditing] = useState(false)
 
   // Keep state in sync if product promotion state changes externally
   useEffect(() => {
-    setPromotion(product.is_promotion)
-  }, [product.is_promotion])
+    setValue(product.discount_percentage || 0)
+  }, [product.discount_percentage])
 
-  const handleTogglePromotion = async (e) => {
-    const isChecked = e.target.checked
-    setPromotion(isChecked)
-    try {
-      await update.mutateAsync({ id: product.id, is_promotion: isChecked })
-      toast.success(isChecked ? 'Marcado en promoción' : 'Removido de promoción')
-    } catch {
-      setPromotion(product.is_promotion)
-      toast.error('Error al actualizar promoción')
+  const save = async () => {
+    setEditing(false)
+    const numericValue = Number(value)
+    if (numericValue !== (product.discount_percentage || 0)) {
+      try {
+        await update.mutateAsync({ id: product.id, discount_percentage: numericValue })
+        toast.success(numericValue > 0 ? `Descuento del ${numericValue}% aplicado` : 'Descuento removido')
+      } catch {
+        setValue(product.discount_percentage || 0)
+        toast.error('Error al actualizar descuento')
+      }
     }
   }
 
+  if (editing) {
+    return (
+      <div className="flex items-center gap-1 justify-center">
+        <Input
+          type="number"
+          min="0"
+          max="100"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onBlur={save}
+          onKeyDown={(e) => e.key === 'Enter' && save()}
+          className="w-16 h-7 text-xs text-center"
+          autoFocus
+        />
+        <span className="text-xs text-muted-foreground">%</span>
+      </div>
+    )
+  }
+
+  const hasDiscount = value > 0
+
   return (
     <div className="flex items-center justify-center">
-      <input
-        type="checkbox"
-        checked={promotion}
-        onChange={handleTogglePromotion}
-        className="h-4 w-4 rounded border-zinc-300 text-primary focus:ring-primary accent-primary cursor-pointer transition-transform duration-200 hover:scale-110"
-        title="Marcar en promoción"
-      />
+      <button 
+        onClick={() => setEditing(true)} 
+        className={`text-sm hover:underline underline-offset-2 px-2 py-0.5 rounded ${hasDiscount ? 'bg-red-500/10 text-red-500 font-bold' : 'text-muted-foreground'}`}
+      >
+        {hasDiscount ? `-${value}%` : '0%'}
+      </button>
     </div>
   )
 }
@@ -271,7 +294,7 @@ export function ProductsTable({ products, isLoading, onEdit, onEditImages }) {
             <th className="text-right p-3">Precio</th>
             <th className="text-right p-3">Stock</th>
             <th className="text-center p-3">Destacado</th>
-            <th className="text-center p-3">Promo</th>
+            <th className="text-center p-3">Descuento</th>
             <th className="text-center p-3">Estado</th>
             <th className="text-right p-3">Acciones</th>
           </tr>

@@ -9,7 +9,7 @@ export default function PromotionsPage() {
   const { data: allProducts = [], isLoading } = useActiveProducts()
   const { data: categories = [] } = useCategories()
 
-  const promoProducts = allProducts.filter(p => p.is_promotion)
+  const promoProducts = allProducts.filter(p => p.discount_percentage > 0)
 
   const {
     search, setSearch,

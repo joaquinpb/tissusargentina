@@ -39,7 +39,7 @@ const schema = z.object({
   category_id: z.string().nullable().optional(),
   is_active: z.boolean().optional(),
   is_featured: z.boolean().optional(),
-  is_promotion: z.boolean().optional(),
+  discount_percentage: z.preprocess((v) => Number(v) || 0, z.number().int().min(0).max(100)),
 })
 
 export function ProductFormSheet({ product, open, onClose }) {
@@ -59,7 +59,7 @@ export function ProductFormSheet({ product, open, onClose }) {
       category_id: product?.category_id || null,
       is_active: product?.is_active ?? true,
       is_featured: product?.is_featured ?? false,
-      is_promotion: product?.is_promotion ?? false,
+      discount_percentage: product?.discount_percentage ?? 0,
     },
   })
 
@@ -79,7 +79,7 @@ export function ProductFormSheet({ product, open, onClose }) {
         category_id: product?.category_id || null,
         is_active: product?.is_active ?? true,
         is_featured: product?.is_featured ?? false,
-        is_promotion: product?.is_promotion ?? false,
+        discount_percentage: product?.discount_percentage ?? 0,
       })
       setImages(product?.images || [])
     }
@@ -230,6 +230,30 @@ export function ProductFormSheet({ product, open, onClose }) {
                   </p>
                 )}
               </div>
+
+              <div className="flex flex-col gap-1.5 md:col-span-2">
+                <Label className="font-medium text-sm">Porcentaje de Descuento</Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground/70 font-semibold">%</span>
+                  <Input 
+                    type="number" 
+                    min="0"
+                    max="100"
+                    {...register('discount_percentage')} 
+                    placeholder="0" 
+                    className="pl-7 focus-visible:ring-primary" 
+                  />
+                </div>
+                <p className="text-[11px] text-muted-foreground leading-normal">
+                  Dejar en 0 si no está en promoción.
+                </p>
+                {errors.discount_percentage && (
+                  <p className="text-xs text-destructive flex items-center gap-1 mt-0.5">
+                    <AlertCircle className="h-3.5 w-3.5" />
+                    {errors.discount_percentage.message}
+                  </p>
+                )}
+              </div>
             </div>
           </div>
 
@@ -272,23 +296,6 @@ export function ProductFormSheet({ product, open, onClose }) {
                 <div className="flex flex-col gap-0.5">
                   <span className="text-sm font-semibold">Destacado</span>
                   <span className="text-xs text-muted-foreground leading-relaxed">Aparecerá en la sección del inicio de la web.</span>
-                </div>
-              </label>
-
-              <label className={cn(
-                "flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 select-none md:col-span-2 sm:col-span-2",
-                watch('is_promotion') 
-                  ? "border-primary bg-primary/[0.03] dark:bg-primary/[0.08]" 
-                  : "border-border hover:border-muted-foreground/25 hover:bg-muted/10"
-              )}>
-                <input 
-                  type="checkbox" 
-                  {...register('is_promotion')} 
-                  className="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-primary accent-primary cursor-pointer" 
-                />
-                <div className="flex flex-col gap-0.5">
-                  <span className="text-sm font-semibold">En Promoción</span>
-                  <span className="text-xs text-muted-foreground leading-relaxed">Se mostrará en la sección de promociones.</span>
                 </div>
               </label>
             </div>
