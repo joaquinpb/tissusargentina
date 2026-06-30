@@ -5,6 +5,7 @@ import { PublicLayout } from './core/layouts/PublicLayout'
 import { AdminLayout } from './core/layouts/AdminLayout'
 import { useAuth } from './core/context/AuthContext'
 import { APP_ROUTES } from './core/lib/routes'
+import { useRealtimeSync } from './core/hooks/useRealtimeSync'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -60,6 +61,8 @@ const Loader = () => (
 )
 
 export default function App() {
+  useRealtimeSync()
+
   return (
     <Suspense fallback={<Loader />}>
       <ScrollToTop />

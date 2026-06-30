@@ -158,3 +158,8 @@ CREATE POLICY "admin delete tissus-images"
     bucket_id = 'tissus-images'
     AND (auth.jwt() -> 'app_metadata' ->> 'role') = 'admin'
   );
+
+-- ─── REALTIME ────────────────────────────────────────────────────────────────
+-- Habilitar realtime para productos y categorías
+alter publication supabase_realtime add table public.products;
+alter publication supabase_realtime add table public.categories;
