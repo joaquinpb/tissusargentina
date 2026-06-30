@@ -37,15 +37,20 @@ export function ProductCard({ product }) {
             <p className="text-xs text-muted-foreground">{categories.name}</p>
           )}
           <p className="font-medium text-sm leading-tight line-clamp-2">{name}</p>
-          <div className="mt-auto pt-1 flex items-baseline gap-2">
-            {hasDiscount ? (
-              <>
-                <p className="text-sm font-bold text-red-500">{formatPrice(discountedPrice)}</p>
-                <p className="text-xs text-muted-foreground line-through decoration-muted-foreground/60">{formatPrice(price)}</p>
-              </>
-            ) : (
-              <p className="text-sm font-semibold">{formatPrice(price)}</p>
-            )}
+          <div className="mt-auto pt-1 flex flex-col gap-1.5">
+            <div className="flex items-baseline gap-2">
+              {hasDiscount ? (
+                <>
+                  <p className="text-sm font-bold text-red-500">{formatPrice(discountedPrice)}</p>
+                  <p className="text-xs text-muted-foreground line-through decoration-muted-foreground/60">{formatPrice(price)}</p>
+                </>
+              ) : (
+                <p className="text-sm font-semibold">{formatPrice(price)}</p>
+              )}
+            </div>
+            <p className="text-[10px] text-muted-foreground/80 italic leading-tight">
+              * Precio sin impuestos nacionales: {formatPrice(discountedPrice / 1.21)}
+            </p>
           </div>
         </CardContent>
       </Card>

@@ -30,15 +30,20 @@ export function ProductInfo({ product }) {
       </h1>
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-3">
-          <div className="flex items-baseline gap-2">
-            {hasDiscount ? (
-              <>
-                <span className="text-3xl font-bold text-red-500">{formatPrice(discountedPrice)}</span>
-                <span className="text-lg text-muted-foreground line-through decoration-muted-foreground/60">{formatPrice(price)}</span>
-              </>
-            ) : (
-              <span className="text-3xl font-semibold">{formatPrice(price)}</span>
-            )}
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-baseline gap-2">
+              {hasDiscount ? (
+                <>
+                  <span className="text-3xl font-bold text-red-500">{formatPrice(discountedPrice)}</span>
+                  <span className="text-lg text-muted-foreground line-through decoration-muted-foreground/60">{formatPrice(price)}</span>
+                </>
+              ) : (
+                <span className="text-3xl font-semibold">{formatPrice(price)}</span>
+              )}
+            </div>
+            <span className="text-xs text-muted-foreground/80 italic">
+              * Precio sin impuestos nacionales: {formatPrice(discountedPrice / 1.21)}
+            </span>
           </div>
           <StockBadge stock={stock} />
         </div>
