@@ -26,8 +26,10 @@ function WhatsAppFab() {
 export function PublicLayout() {
   return (
     <div className="min-h-screen flex flex-col">
-      <PromotionBanner />
-      <PublicHeader />
+      <div className="sticky top-0 z-[60] w-full flex flex-col">
+        <PromotionBanner />
+        <PublicHeader />
+      </div>
       <main className="flex-1 pb-16 md:pb-0">
         <Outlet />
       </main>
