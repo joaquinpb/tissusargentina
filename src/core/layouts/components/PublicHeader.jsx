@@ -14,7 +14,7 @@ import { cn } from '@/core/lib/utils'
 
 const NAV_LINKS = [
   { to: APP_ROUTES.HOME(), label: 'Inicio', exact: true },
-  { to: APP_ROUTES.CATALOG(), label: 'Catálogo' },
+  { to: APP_ROUTES.CATALOG(), label: 'Productos' },
   { to: APP_ROUTES.CONTACT(), label: 'Contacto' },
 ]
 

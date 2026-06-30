@@ -20,7 +20,7 @@ export default function CatalogPage() {
   return (
     <div className="container mx-auto px-4 py-8 flex flex-col gap-6">
       <div>
-        <h1 className="text-3xl font-bold mb-1">Catálogo</h1>
+        <h1 className="text-3xl font-bold mb-1">Productos</h1>
         <p className="text-muted-foreground text-sm">{filtered.length} productos encontrados</p>
       </div>
 

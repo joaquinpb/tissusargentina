@@ -73,7 +73,7 @@ export default function AdminDashboard() {
           title="Inactivos"
           value={inactiveProducts}
           icon={Archive}
-          description="Ocultos del catálogo"
+          description="Ocultos al público"
           loading={productsLoading}
         />
       </div>

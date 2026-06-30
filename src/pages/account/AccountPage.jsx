@@ -157,7 +157,7 @@ export default function AccountPage() {
                 </p>
               </div>
               <Button asChild variant="outline" className="mt-2" size="sm">
-                <Link to={APP_ROUTES.CATALOG()}>Ir al catálogo</Link>
+                <Link to={APP_ROUTES.CATALOG()}>Ver productos</Link>
               </Button>
             </div>
           ) : (

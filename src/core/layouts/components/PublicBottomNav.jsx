@@ -9,7 +9,7 @@ export function PublicBottomNav() {
 
   const navItems = [
     { to: APP_ROUTES.HOME(), label: 'Inicio', icon: Home, exact: true },
-    { to: APP_ROUTES.CATALOG(), label: 'Catálogo', icon: Grid },
+    { to: APP_ROUTES.CATALOG(), label: 'Productos', icon: Grid },
     { to: APP_ROUTES.CONTACT(), label: 'Contacto', icon: MessageSquare },
     { to: session ? APP_ROUTES.ACCOUNT() : APP_ROUTES.LOGIN(), label: session ? 'Cuenta' : 'Ingresar', icon: User },
   ]

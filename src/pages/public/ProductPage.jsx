@@ -37,7 +37,7 @@ export default function ProductPage() {
     <div className="container mx-auto px-4 py-8 flex flex-col gap-6">
       <Button variant="ghost" size="sm" asChild className="-ml-2 w-fit">
         <Link to={APP_ROUTES.CATALOG()}>
-          <ArrowLeft className="mr-1 h-4 w-4" /> Volver al catálogo
+          <ArrowLeft className="mr-1 h-4 w-4" /> Volver a Productos
         </Link>
       </Button>
 

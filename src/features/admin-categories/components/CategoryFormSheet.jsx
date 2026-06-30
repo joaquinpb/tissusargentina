@@ -104,7 +104,7 @@ export function CategoryFormSheet({ category, open, onClose }) {
           <p className="text-xs text-muted-foreground mt-1">
             {isEditing 
               ? 'Edita los detalles de la categoría seleccionada.' 
-              : 'Agrega una nueva categoría al catálogo del sitio.'}
+              : 'Agrega una nueva categoría al listado de productos del sitio.'}
           </p>
         </SheetHeader>
 
@@ -146,7 +146,7 @@ export function CategoryFormSheet({ category, open, onClose }) {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <Label className="font-medium text-sm">Posición (Orden en catálogo)</Label>
+              <Label className="font-medium text-sm">Posición (Orden de visualización)</Label>
               <Input type="number" min="0" {...register('position')} className="focus-visible:ring-primary" />
               <p className="text-[11px] text-muted-foreground leading-normal">
                 Determina el orden de visualización de la categoría en el menú principal (números más bajos se muestran primero).

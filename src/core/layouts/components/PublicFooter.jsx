@@ -13,7 +13,7 @@ export function PublicFooter() {
           <p className="text-sm text-muted-foreground mt-1">Mesas de pool, ping pong y accesorios</p>
         </div>
         <nav className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-          <Link to={APP_ROUTES.CATALOG()} className="hover:text-foreground transition-colors">Catálogo</Link>
+          <Link to={APP_ROUTES.CATALOG()} className="hover:text-foreground transition-colors">Productos</Link>
           <Link to={APP_ROUTES.CONTACT()} className="hover:text-foreground transition-colors">Contacto</Link>
         </nav>
         <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Tissus. Todos los derechos reservados.</p>

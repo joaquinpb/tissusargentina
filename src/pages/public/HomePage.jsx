@@ -45,7 +45,7 @@ export default function HomePage() {
             <div className="flex gap-3 flex-wrap mt-2 justify-center md:justify-start">
               <Button asChild size="lg">
                 <Link to={APP_ROUTES.CATALOG()}>
-                  Ver catálogo <ArrowRight className="ml-2 h-4 w-4" />
+                  Ver productos <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
               <Button variant="outline" size="lg" asChild>
