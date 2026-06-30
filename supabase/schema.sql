@@ -160,6 +160,7 @@ CREATE POLICY "admin delete tissus-images"
   );
 
 -- ─── REALTIME ────────────────────────────────────────────────────────────────
--- Habilitar realtime para productos y categorías
+-- Habilitar realtime para productos, categorías y consultas
 alter publication supabase_realtime add table public.products;
 alter publication supabase_realtime add table public.categories;
+alter publication supabase_realtime add table public.contact_requests;

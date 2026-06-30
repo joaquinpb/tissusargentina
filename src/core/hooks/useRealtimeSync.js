@@ -28,9 +28,21 @@ export function useRealtimeSync() {
       )
       .subscribe()
 
+    const contactRequestsChannel = supabase
+      .channel('public:contact_requests')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'contact_requests' },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ['contact_requests'] })
+        }
+      )
+      .subscribe()
+
     return () => {
       supabase.removeChannel(productsChannel)
       supabase.removeChannel(categoriesChannel)
+      supabase.removeChannel(contactRequestsChannel)
     }
   }, [queryClient])
 }
