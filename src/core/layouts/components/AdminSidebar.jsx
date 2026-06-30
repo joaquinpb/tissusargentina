@@ -1,5 +1,5 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Package, Tag, MessageSquare, LogOut } from 'lucide-react'
+import { LayoutDashboard, Package, Tag, MessageSquare, LogOut, Star } from 'lucide-react'
 import { Button } from '@/core/components/ui/button'
 import { Separator } from '@/core/components/ui/separator'
 import { useAuth } from '@/core/context/AuthContext'
@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { to: APP_ROUTES.ADMIN.DASHBOARD(), label: 'Dashboard', icon: LayoutDashboard, exact: true },
   { to: APP_ROUTES.ADMIN.PRODUCTS(), label: 'Productos', icon: Package },
   { to: APP_ROUTES.ADMIN.CATEGORIES(), label: 'Categorías', icon: Tag },
+  { to: APP_ROUTES.ADMIN.FEATURED(), label: 'Destacados', icon: Star },
   { to: APP_ROUTES.ADMIN.REQUESTS(), label: 'Consultas', icon: MessageSquare },
 ]
 

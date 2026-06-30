@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Package, Tag, MessageSquare } from 'lucide-react'
+import { LayoutDashboard, Package, Tag, MessageSquare, Star } from 'lucide-react'
 import { APP_ROUTES } from '@/core/lib/routes'
 import { cn } from '@/core/lib/utils'
 import { useAdminRequests } from '@/core/hooks/queries/useContactRequestsQueries'
@@ -12,6 +12,7 @@ export function AdminBottomNav() {
     { to: APP_ROUTES.ADMIN.DASHBOARD(), label: 'Dashboard', icon: LayoutDashboard, exact: true },
     { to: APP_ROUTES.ADMIN.PRODUCTS(), label: 'Productos', icon: Package },
     { to: APP_ROUTES.ADMIN.CATEGORIES(), label: 'Categorías', icon: Tag },
+    { to: APP_ROUTES.ADMIN.FEATURED(), label: 'Destacados', icon: Star },
     { to: APP_ROUTES.ADMIN.REQUESTS(), label: 'Consultas', icon: MessageSquare },
   ]
 

@@ -34,6 +34,7 @@ export async function fetchFeaturedProducts() {
     .select('*, categories(id, name, slug)')
     .eq('is_active', true)
     .eq('is_featured', true)
+    .order('featured_order', { ascending: true })
     .order('created_at', { ascending: false })
     .limit(8)
   if (error) throw error

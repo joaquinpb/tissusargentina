@@ -34,6 +34,7 @@ const AccountPage = lazy(() => import('./pages/account/AccountPage'))
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'))
 const AdminProductsPage = lazy(() => import('./pages/admin/AdminProductsPage'))
 const AdminCategoriesPage = lazy(() => import('./pages/admin/AdminCategoriesPage'))
+const AdminFeaturedProductsPage = lazy(() => import('./pages/admin/AdminFeaturedProductsPage'))
 const AdminRequestsPage = lazy(() => import('./pages/admin/AdminRequestsPage'))
 
 function ProtectedRoute({ children }) {
@@ -98,6 +99,7 @@ export default function App() {
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/productos" element={<AdminProductsPage />} />
           <Route path="/admin/categorias" element={<AdminCategoriesPage />} />
+          <Route path="/admin/destacados" element={<AdminFeaturedProductsPage />} />
           <Route path="/admin/consultas" element={<AdminRequestsPage />} />
         </Route>
 

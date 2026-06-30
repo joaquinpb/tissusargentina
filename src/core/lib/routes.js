@@ -10,6 +10,7 @@ export const APP_ROUTES = {
     DASHBOARD: () => '/admin',
     PRODUCTS: () => '/admin/productos',
     CATEGORIES: () => '/admin/categorias',
+    FEATURED: () => '/admin/destacados',
     REQUESTS: () => '/admin/consultas',
   },
 }
