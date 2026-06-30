@@ -3,6 +3,7 @@ import { Toaster } from '@/core/components/ui/sonner'
 import { PublicHeader } from './components/PublicHeader'
 import { PublicFooter } from './components/PublicFooter'
 import { PublicBottomNav } from './components/PublicBottomNav'
+import { PromotionBanner } from './components/PromotionBanner'
 
 const WHATSAPP_NUMBER = '5491122588537'
 
@@ -25,6 +26,7 @@ function WhatsAppFab() {
 export function PublicLayout() {
   return (
     <div className="min-h-screen flex flex-col">
+      <PromotionBanner />
       <PublicHeader />
       <main className="flex-1 pb-16 md:pb-0">
         <Outlet />

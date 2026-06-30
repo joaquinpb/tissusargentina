@@ -164,3 +164,29 @@ CREATE POLICY "admin delete tissus-images"
 alter publication supabase_realtime add table public.products;
 alter publication supabase_realtime add table public.categories;
 alter publication supabase_realtime add table public.contact_requests;
+
+-- ─── SETTINGS ────────────────────────────────────────────────────────────────
+CREATE TABLE store_settings (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  promo_active boolean NOT NULL DEFAULT true,
+  promo_min_amount numeric(12,2) NOT NULL DEFAULT 120000,
+  promo_discount_percentage integer NOT NULL DEFAULT 15,
+  promo_installments integer NOT NULL DEFAULT 3,
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TRIGGER on_store_settings_updated
+  BEFORE UPDATE ON store_settings
+  FOR EACH ROW EXECUTE PROCEDURE handle_updated_at();
+
+ALTER TABLE store_settings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "public read store_settings"
+  ON store_settings FOR SELECT USING (true);
+
+CREATE POLICY "admin manage store_settings"
+  ON store_settings FOR ALL
+  USING ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
+  WITH CHECK ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+
+alter publication supabase_realtime add table public.store_settings;

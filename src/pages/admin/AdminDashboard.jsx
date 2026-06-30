@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/core/components/ui/c
 import { Skeleton } from '@/core/components/ui/skeleton'
 import { useAdminProducts } from '@/core/hooks/queries/useProductsQueries'
 import { useAdminRequests } from '@/core/hooks/queries/useContactRequestsQueries'
+import { PromotionSettingsCard } from './components/PromotionSettingsCard'
 
 function StatCard({ title, value, icon: Icon, description, loading, indicator }) {
   return (
@@ -77,6 +78,11 @@ export default function AdminDashboard() {
           loading={productsLoading}
         />
       </div>
+
+      <div className="mt-4">
+        <PromotionSettingsCard />
+      </div>
     </div>
   )
 }
+

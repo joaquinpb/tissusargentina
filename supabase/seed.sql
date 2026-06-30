@@ -102,5 +102,9 @@ INSERT INTO products (id, category_id, name, slug, description, price, stock, im
  'Paño de calidad profesional en color Rojo Borgoña. Agrega un toque de distinción y elegancia clásica a tu mesa de pool familiar o sala de juegos comercial.', 
  98000.00, 6, 
  ARRAY['https://images.unsplash.com/photo-1609100096238-3051c5191151?q=80&w=800&auto=format&fit=crop'], 
- true, false, 'PA-TIS-ROJ', 
- '{"Composición": "85% Lana, 15% Nylon", "Ancho": "1.65m", "Ideal para": "Mesas de 8 y 9 pies", "Color": "Rojo Borgoña"}'::jsonb);
+ true, false, 'PA-TIS-ROJ', '{"Composición": "85% Lana, 15% Nylon", "Ancho": "1.65m", "Ideal para": "Mesas de 8 y 9 pies", "Color": "Rojo Borgoña"}'::jsonb);
+
+-- ─── SETTINGS ───────────────────────────────────────────────────────────────
+INSERT INTO store_settings (id, promo_active, promo_min_amount, promo_discount_percentage, promo_installments)
+VALUES ('00000000-0000-0000-0000-000000000000', true, 120000, 15, 3)
+ON CONFLICT (id) DO NOTHING;
