@@ -39,10 +39,22 @@ export function useRealtimeSync() {
       )
       .subscribe()
 
+    const settingsChannel = supabase
+      .channel('public:store_settings')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'store_settings' },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ['store_settings'] })
+        }
+      )
+      .subscribe()
+
     return () => {
       supabase.removeChannel(productsChannel)
       supabase.removeChannel(categoriesChannel)
       supabase.removeChannel(contactRequestsChannel)
+      supabase.removeChannel(settingsChannel)
     }
   }, [queryClient])
 }
