@@ -39,6 +39,7 @@ const schema = z.object({
   category_id: z.string().nullable().optional(),
   is_active: z.boolean().optional(),
   is_featured: z.boolean().optional(),
+  is_promotion: z.boolean().optional(),
 })
 
 export function ProductFormSheet({ product, open, onClose }) {
@@ -58,6 +59,7 @@ export function ProductFormSheet({ product, open, onClose }) {
       category_id: product?.category_id || null,
       is_active: product?.is_active ?? true,
       is_featured: product?.is_featured ?? false,
+      is_promotion: product?.is_promotion ?? false,
     },
   })
 
@@ -77,6 +79,7 @@ export function ProductFormSheet({ product, open, onClose }) {
         category_id: product?.category_id || null,
         is_active: product?.is_active ?? true,
         is_featured: product?.is_featured ?? false,
+        is_promotion: product?.is_promotion ?? false,
       })
       setImages(product?.images || [])
     }
@@ -269,6 +272,23 @@ export function ProductFormSheet({ product, open, onClose }) {
                 <div className="flex flex-col gap-0.5">
                   <span className="text-sm font-semibold">Destacado</span>
                   <span className="text-xs text-muted-foreground leading-relaxed">Aparecerá en la sección del inicio de la web.</span>
+                </div>
+              </label>
+
+              <label className={cn(
+                "flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 select-none md:col-span-2 sm:col-span-2",
+                watch('is_promotion') 
+                  ? "border-primary bg-primary/[0.03] dark:bg-primary/[0.08]" 
+                  : "border-border hover:border-muted-foreground/25 hover:bg-muted/10"
+              )}>
+                <input 
+                  type="checkbox" 
+                  {...register('is_promotion')} 
+                  className="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-primary accent-primary cursor-pointer" 
+                />
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-sm font-semibold">En Promoción</span>
+                  <span className="text-xs text-muted-foreground leading-relaxed">Se mostrará en la sección de promociones.</span>
                 </div>
               </label>
             </div>

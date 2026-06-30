@@ -183,6 +183,40 @@ function FeaturedCell({ product }) {
   )
 }
 
+function PromotionCell({ product }) {
+  const { update } = useProductMutations()
+  const [promotion, setPromotion] = useState(product.is_promotion)
+
+  // Keep state in sync if product promotion state changes externally
+  useEffect(() => {
+    setPromotion(product.is_promotion)
+  }, [product.is_promotion])
+
+  const handleTogglePromotion = async (e) => {
+    const isChecked = e.target.checked
+    setPromotion(isChecked)
+    try {
+      await update.mutateAsync({ id: product.id, is_promotion: isChecked })
+      toast.success(isChecked ? 'Marcado en promoción' : 'Removido de promoción')
+    } catch {
+      setPromotion(product.is_promotion)
+      toast.error('Error al actualizar promoción')
+    }
+  }
+
+  return (
+    <div className="flex items-center justify-center">
+      <input
+        type="checkbox"
+        checked={promotion}
+        onChange={handleTogglePromotion}
+        className="h-4 w-4 rounded border-zinc-300 text-primary focus:ring-primary accent-primary cursor-pointer transition-transform duration-200 hover:scale-110"
+        title="Marcar en promoción"
+      />
+    </div>
+  )
+}
+
 export function ProductsTable({ products, isLoading, onEdit, onEditImages }) {
   const confirm = useConfirm()
   const { update, remove } = useProductMutations()
@@ -237,6 +271,7 @@ export function ProductsTable({ products, isLoading, onEdit, onEditImages }) {
             <th className="text-right p-3">Precio</th>
             <th className="text-right p-3">Stock</th>
             <th className="text-center p-3">Destacado</th>
+            <th className="text-center p-3">Promo</th>
             <th className="text-center p-3">Estado</th>
             <th className="text-right p-3">Acciones</th>
           </tr>
@@ -270,6 +305,9 @@ export function ProductsTable({ products, isLoading, onEdit, onEditImages }) {
               <td className="p-3 text-right"><StockCell product={p} /></td>
               <td className="p-3 text-center">
                 <FeaturedCell product={p} />
+              </td>
+              <td className="p-3 text-center">
+                <PromotionCell product={p} />
               </td>
               <td className="p-3 text-center">
                 <Badge variant={p.is_active ? 'default' : 'secondary'}>

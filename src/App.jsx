@@ -19,6 +19,7 @@ function ScrollToTop() {
 // Páginas públicas
 const HomePage = lazy(() => import('./pages/public/HomePage'))
 const CatalogPage = lazy(() => import('./pages/public/CatalogPage'))
+const PromotionsPage = lazy(() => import('./pages/public/PromotionsPage'))
 const ProductPage = lazy(() => import('./pages/public/ProductPage'))
 const ContactPage = lazy(() => import('./pages/public/ContactPage'))
 
@@ -67,6 +68,7 @@ export default function App() {
         <Route element={<PublicLayout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/catalogo" element={<CatalogPage />} />
+          <Route path="/promociones" element={<PromotionsPage />} />
           <Route path="/productos/:slug" element={<ProductPage />} />
           <Route path="/contacto" element={<ContactPage />} />
           <Route

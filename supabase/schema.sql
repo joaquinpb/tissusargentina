@@ -21,6 +21,7 @@ CREATE TABLE products (
   images          text[] NOT NULL DEFAULT '{}',
   is_active       boolean NOT NULL DEFAULT true,
   is_featured     boolean NOT NULL DEFAULT false,
+  is_promotion    boolean NOT NULL DEFAULT false,
   sku             text,
   specifications  jsonb DEFAULT '{}',
   created_at      timestamptz NOT NULL DEFAULT now(),

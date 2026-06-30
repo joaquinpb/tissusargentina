@@ -1,6 +1,7 @@
 export const APP_ROUTES = {
   HOME: () => '/',
   CATALOG: (category) => category ? `/catalogo?categoria=${category}` : '/catalogo',
+  PROMOTIONS: () => '/promociones',
   PRODUCT: (slug) => `/productos/${slug}`,
   CONTACT: () => '/contacto',
   LOGIN: () => '/login',

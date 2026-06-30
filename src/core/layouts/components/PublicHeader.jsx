@@ -14,6 +14,7 @@ import { cn } from '@/core/lib/utils'
 
 const NAV_LINKS = [
   { to: APP_ROUTES.HOME(), label: 'Inicio', exact: true },
+  { to: APP_ROUTES.PROMOTIONS(), label: 'Promociones', highlight: true },
   { to: APP_ROUTES.CATALOG(), label: 'Productos' },
   { to: APP_ROUTES.CONTACT(), label: 'Contacto' },
 ]
@@ -37,13 +38,20 @@ export function PublicHeader() {
 
         {/* Nav desktop */}
         <nav className="hidden md:flex items-center gap-6 text-sm">
-          {NAV_LINKS.map(({ to, label, exact }) => (
+          {NAV_LINKS.map(({ to, label, exact, highlight }) => (
             <NavLink
               key={to}
               to={to}
               end={exact}
               className={({ isActive }) =>
-                cn('transition-colors hover:text-foreground', isActive ? 'text-foreground font-medium' : 'text-muted-foreground')
+                cn(
+                  'transition-colors',
+                  highlight
+                    ? 'text-primary bg-primary/10 hover:bg-primary/20 px-3 py-1.5 rounded-full hover:text-primary font-medium'
+                    : isActive
+                    ? 'text-foreground font-medium'
+                    : 'text-muted-foreground hover:text-foreground'
+                )
               }
             >
               {label}
