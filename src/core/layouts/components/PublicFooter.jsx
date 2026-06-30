@@ -11,7 +11,7 @@ export function PublicFooter() {
             <img src="/logo-compacto.png" alt="Tissus" className="h-7 w-auto object-contain dark:invert" />
             <span className="font-bold text-lg">Tissus</span>
           </Link>
-          <p className="text-sm text-muted-foreground mt-1">Mesas de pool, ping pong y accesorios</p>
+          <p className="text-sm text-muted-foreground mt-1">Juegos, deportes y esparcimiento</p>
           <div className="flex flex-col gap-2 mt-4">
             <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
               <Phone className="w-4 h-4" />

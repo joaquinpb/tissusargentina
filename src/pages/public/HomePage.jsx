@@ -33,12 +33,15 @@ export default function HomePage() {
           </div>
           
           {/* Content on the right */}
-          <div className="flex flex-col items-center md:items-start text-center md:text-left gap-4 max-w-xl">
+          <div className="flex flex-col items-center md:items-start text-center md:text-left gap-3 max-w-xl">
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight">
-              Mesas de pool, ping pong y accesorios
+              Tissus Argentina
             </h1>
-            <p className="text-lg text-muted-foreground">
-              La mejor calidad para tu hogar, club o negocio. Consultanos sin compromiso.
+            <h2 className="text-2xl md:text-2xl font-semibold tracking-tight text-foreground/90 mt-1">
+              Juegos, deportes y esparcimiento
+            </h2>
+            <p className="text-lg text-muted-foreground mt-0">
+              Desde 1995, líderes en la fabricación de mesas de ping pong, pool y juegos de salón.
             </p>
             
             {/* Buttons below the text */}
