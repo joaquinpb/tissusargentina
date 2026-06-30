@@ -6,6 +6,16 @@ import { AdminLayout } from './core/layouts/AdminLayout'
 import { useAuth } from './core/context/AuthContext'
 import { APP_ROUTES } from './core/lib/routes'
 
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
+  
+  return null
+}
+
 // Páginas públicas
 const HomePage = lazy(() => import('./pages/public/HomePage'))
 const CatalogPage = lazy(() => import('./pages/public/CatalogPage'))
@@ -51,6 +61,7 @@ const Loader = () => (
 export default function App() {
   return (
     <Suspense fallback={<Loader />}>
+      <ScrollToTop />
       <Routes>
         {/* Públicas */}
         <Route element={<PublicLayout />}>
