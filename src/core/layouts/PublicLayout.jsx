@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { Outlet } from 'react-router-dom'
 import { Toaster } from '@/core/components/ui/sonner'
 import { PublicHeader } from './components/PublicHeader'
@@ -24,6 +25,12 @@ function WhatsAppFab() {
 }
 
 export function PublicLayout() {
+  const Loader = () => (
+    <div className="flex items-center justify-center min-h-[40vh] text-muted-foreground">
+      Cargando...
+    </div>
+  )
+
   return (
     <div className="min-h-screen flex flex-col">
       <div className="sticky top-0 z-[60] w-full flex flex-col">
@@ -31,7 +38,9 @@ export function PublicLayout() {
         <PublicHeader />
       </div>
       <main className="flex-1 pb-16 md:pb-0">
-        <Outlet />
+        <Suspense fallback={<Loader />}>
+          <Outlet />
+        </Suspense>
       </main>
       <PublicFooter />
       <PublicBottomNav />

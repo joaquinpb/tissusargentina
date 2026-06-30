@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Plus, Upload } from 'lucide-react'
 import { Button } from '@/core/components/ui/button'
 import { Input } from '@/core/components/ui/input'
@@ -14,7 +14,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/core/components/ui/select'
-import { useMemo } from 'react'
 
 export default function AdminProductsPage() {
   const { data: products, isLoading } = useAdminProducts()
@@ -25,6 +24,15 @@ export default function AdminProductsPage() {
   const [csvOpen, setCsvOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [sortBy, setSortBy] = useState('name_asc')
+  
+  // Defer heavy rendering so navigation is instant and loader can be seen
+  const [visibleCount, setVisibleCount] = useState(20)
+  useEffect(() => {
+    if (products && visibleCount < products.length) {
+      const t = setTimeout(() => setVisibleCount(products.length), 150)
+      return () => clearTimeout(t)
+    }
+  }, [products, visibleCount])
 
   const filtered = useMemo(() => {
     let result = products ? [...products] : []
@@ -94,8 +102,8 @@ export default function AdminProductsPage() {
       </div>
 
       <ProductsTable 
-        products={filtered} 
-        isLoading={isLoading} 
+        products={filtered.slice(0, visibleCount)} 
+        isLoading={isLoading || visibleCount === 20 && filtered.length > 20} 
         onEdit={handleEdit} 
         onEditImages={handleEditImages}
       />

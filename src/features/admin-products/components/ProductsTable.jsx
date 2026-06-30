@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { toast } from 'sonner'
-import { Pencil, Trash2, Eye, EyeOff, Star, Image as ImageIcon } from 'lucide-react'
+import { Pencil, Trash2, Eye, EyeOff, Star, Image as ImageIcon, Loader2 } from 'lucide-react'
 import { Button } from '@/core/components/ui/button'
 import { Badge } from '@/core/components/ui/badge'
 import { Input } from '@/core/components/ui/input'
@@ -274,8 +274,12 @@ export function ProductsTable({ products, isLoading, onEdit, onEditImages }) {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-3">
-        {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}
+      <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
+        <div className="relative flex flex-col items-center justify-center mb-6 h-16 w-16">
+          <div className="bg-primary ping-pong-ball"></div>
+          <div className="bg-primary/20 ping-pong-shadow absolute bottom-0"></div>
+        </div>
+        <p className="font-medium animate-pulse">Cargando productos...</p>
       </div>
     )
   }
@@ -291,11 +295,11 @@ export function ProductsTable({ products, isLoading, onEdit, onEditImages }) {
           <tr>
             <th className="text-left p-3">Producto</th>
             <th className="text-left p-3 hidden md:table-cell">Categoría</th>
-            <th className="text-right p-3">Precio</th>
-            <th className="text-right p-3">Stock</th>
-            <th className="text-center p-3">Destacado</th>
-            <th className="text-center p-3">Descuento</th>
-            <th className="text-center p-3">Estado</th>
+            <th className="text-right p-3 hidden md:table-cell">Precio</th>
+            <th className="text-right p-3 hidden md:table-cell">Stock</th>
+            <th className="text-center p-3 hidden md:table-cell">Destacado</th>
+            <th className="text-center p-3 hidden md:table-cell">Descuento</th>
+            <th className="text-center p-3 hidden md:table-cell">Estado</th>
             <th className="text-right p-3">Acciones</th>
           </tr>
         </thead>
@@ -324,15 +328,15 @@ export function ProductsTable({ products, isLoading, onEdit, onEditImages }) {
               <td className="p-3 hidden md:table-cell">
                 <CategoryCell product={p} categories={categories} />
               </td>
-              <td className="p-3 text-right"><PriceCell product={p} /></td>
-              <td className="p-3 text-right"><StockCell product={p} /></td>
-              <td className="p-3 text-center">
+              <td className="p-3 text-right hidden md:table-cell"><PriceCell product={p} /></td>
+              <td className="p-3 text-right hidden md:table-cell"><StockCell product={p} /></td>
+              <td className="p-3 text-center hidden md:table-cell">
                 <FeaturedCell product={p} />
               </td>
-              <td className="p-3 text-center">
+              <td className="p-3 text-center hidden md:table-cell">
                 <PromotionCell product={p} />
               </td>
-              <td className="p-3 text-center">
+              <td className="p-3 text-center hidden md:table-cell">
                 <Badge variant={p.is_active ? 'default' : 'secondary'}>
                   {p.is_active ? 'Activo' : 'Inactivo'}
                 </Badge>
@@ -342,7 +346,7 @@ export function ProductsTable({ products, isLoading, onEdit, onEditImages }) {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-7 w-7"
+                    className="h-7 w-7 hidden md:inline-flex"
                     title={p.is_active ? 'Desactivar' : 'Activar'}
                     onClick={() => handleToggleActive(p)}
                   >
@@ -354,7 +358,7 @@ export function ProductsTable({ products, isLoading, onEdit, onEditImages }) {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-7 w-7 text-destructive hover:text-destructive"
+                    className="h-7 w-7 text-destructive hover:text-destructive hidden md:inline-flex"
                     onClick={() => handleDelete(p)}
                   >
                     <Trash2 className="h-3.5 w-3.5" />

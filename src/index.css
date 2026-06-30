@@ -141,3 +141,27 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+@utility ping-pong-ball {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  animation: ping-pong-bounce 0.4s cubic-bezier(0.5, 0.05, 1, 0.5) infinite alternate;
+}
+
+@utility ping-pong-shadow {
+  width: 24px;
+  height: 4px;
+  border-radius: 50%;
+  animation: ping-pong-shadow-scale 0.4s cubic-bezier(0.5, 0.05, 1, 0.5) infinite alternate;
+}
+
+@keyframes ping-pong-bounce {
+  0% { transform: translateY(-40px) scale(0.9, 1.1); }
+  100% { transform: translateY(0) scale(1.1, 0.8); }
+}
+
+@keyframes ping-pong-shadow-scale {
+  0% { transform: scale(0.2); opacity: 0.1; }
+  100% { transform: scale(1); opacity: 0.3; }
+}
